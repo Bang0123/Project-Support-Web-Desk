@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
@@ -23,11 +24,14 @@ namespace SupportWebDesk
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            //services.AddHangfire(x => x.UseSqlServerStorage("<connection string>"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            //app.UseHangfireServer();
+            //app.UseHangfireDashboard();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -40,7 +44,6 @@ namespace SupportWebDesk
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
             app.UseStaticFiles();
 
             app.UseMvc(routes =>
