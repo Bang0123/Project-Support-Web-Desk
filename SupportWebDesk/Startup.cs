@@ -24,14 +24,14 @@ namespace SupportWebDesk
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            //services.AddHangfire(x => x.UseSqlServerStorage("<connection string>"));
+            services.AddHangfire(x => x.UseSqlServerStorage("<connection string>"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //app.UseHangfireServer();
-            //app.UseHangfireDashboard();
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
