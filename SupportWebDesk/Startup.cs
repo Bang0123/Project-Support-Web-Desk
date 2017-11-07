@@ -11,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace SupportWebDesk
 {
-    //Develop
     public class Startup
     {
         public Startup(IConfiguration configuration)
