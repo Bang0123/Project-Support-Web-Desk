@@ -20,5 +20,10 @@ namespace SupportWebDesk.Data
         {
             modelBuilder.Entity<Mail>().ToTable("Mail");
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+        }
     }
 }

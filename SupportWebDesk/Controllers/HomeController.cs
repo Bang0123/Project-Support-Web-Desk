@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
+using SupportWebDesk.Data;
+using SupportWebDesk.Data.Jobs;
 
 namespace SupportWebDesk.Controllers
 {

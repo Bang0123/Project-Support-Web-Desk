@@ -16,6 +16,14 @@ namespace SupportWebDesk.Helpers
         private readonly int port;
         private readonly bool ssl;
 
+        /// <summary>
+        /// Imap
+        /// </summary>
+        /// <param name="mailServer"></param>
+        /// <param name="port"></param>
+        /// <param name="ssl"></param>
+        /// <param name="login"></param>
+        /// <param name="password"></param>
         public MailRepository(string mailServer, int port, bool ssl, string login, string password)
         {
             this.mailServer = mailServer;
@@ -25,14 +33,14 @@ namespace SupportWebDesk.Helpers
             this.password = password;
         }
 
-        public IEnumerable<string> GetUnreadMailsAndMarkAsRead()
+        public IEnumerable<MimeMessage> GetUnreadMailsAndMarkAsRead()
         {
             return GetUnreadMails(true);
         }
 
-        public IEnumerable<string> GetUnreadMails(bool markAsRead = false)
+        public IEnumerable<MimeMessage> GetUnreadMails(bool markAsRead = false)
         {
-            var messages = new List<string>();
+            var messages = new List<MimeMessage>();
 
             using (var client = new ImapClient())
             {
@@ -46,13 +54,13 @@ namespace SupportWebDesk.Helpers
 
                 // The Inbox folder is always available on all IMAP servers...
                 var inbox = client.Inbox;
-                inbox.Open(FolderAccess.ReadOnly);
+                inbox.Open(FolderAccess.ReadWrite);
                 var results = inbox.Search(SearchOptions.All, SearchQuery.Not(SearchQuery.Seen));
                 foreach (var uniqueId in results.UniqueIds)
                 {
                     var message = inbox.GetMessage(uniqueId);
 
-                    messages.Add(message.HtmlBody);
+                    messages.Add(message);
                     if (markAsRead)
                     {
                         inbox.AddFlags(uniqueId, MessageFlags.Seen, true);
@@ -63,9 +71,9 @@ namespace SupportWebDesk.Helpers
             return messages;
         }
 
-        public IEnumerable<string> GetAllMails(bool markAsRead = false)
+        public IEnumerable<MimeMessage> GetAllMails(bool markAsRead = false)
         {
-            var messages = new List<string>();
+            var messages = new List<MimeMessage>();
 
             using (var client = new ImapClient())
             {
@@ -84,7 +92,7 @@ namespace SupportWebDesk.Helpers
                 foreach (var uniqueId in results.UniqueIds)
                 {
                     var message = inbox.GetMessage(uniqueId);
-                    messages.Add(message.HtmlBody);
+                    messages.Add(message);
                     if (markAsRead)
                     {
                         inbox.AddFlags(uniqueId, MessageFlags.Seen, true);
