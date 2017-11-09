@@ -19,11 +19,11 @@ namespace SupportWebDesk.Data.Jobs
         {
             _db = dbContext;
         }
-        public void GetMailsAndSaveToDb()
+        public void GetMailsAndSaveToDb(bool markAsRead = false)
         {
-
-            _mailRepo = InitMailRepo("imap.gmail.com", 993, true, "webdesk1234@gmail.com", "supportweb");
-            var mails = _mailRepo.GetUnreadMails();
+            var loginDetails = Startup.Appsettings.GetSection("EmailLogin");
+            _mailRepo = InitMailRepo("imap.gmail.com", 993, true, loginDetails["username"], loginDetails["password"]);
+            var mails = _mailRepo.GetUnreadMails(markAsRead: markAsRead);
             var newMails = new List<Mail>();
             foreach (var message in mails)
             {
@@ -33,14 +33,13 @@ namespace SupportWebDesk.Data.Jobs
                     Body = message.HtmlBody ?? message.TextBody,
                     Sender = message.Sender == null ? null : message.Sender.Name + "," + message.Sender.Address,
                     messageId = message.MessageId,
-                    Date = message.Date == null ? DateTime.Now : message.Date.DateTime
+                    Date = message.Date == null ? DateTime.Now : message.Date.DateTime,
+                    TicketCreated = false
                 };
-
                 newMails.Add(mail);
             }
-            _db.Mails.AddRangeAsync(newMails);
-            _db.SaveChangesAsync();
-
+            _db.Mails.AddRange(newMails);
+            _db.SaveChanges();
         }
 
         public IMailRepository InitMailRepo(string mailServer, int port, bool ssl, string login, string password)

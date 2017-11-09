@@ -29,7 +29,7 @@ namespace SupportWebDesk
             Configuration = configuration;
         }
 
-        public IConfiguration Appsettings { get; }
+        public static IConfiguration Appsettings { get; set; }
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -73,7 +73,7 @@ namespace SupportWebDesk
             app.UseHangfireServer();
             app.UseHangfireDashboard();
 
-            RecurringJob.AddOrUpdate(()=> new EmailPullerJob(ctx).GetMailsAndSaveToDb(), Cron.MinuteInterval(5));
+            RecurringJob.AddOrUpdate(()=> new EmailPullerJob(ctx).GetMailsAndSaveToDb(env.IsProduction()), Cron.MinuteInterval(5));
 
             app.UseMvc(routes =>
             {

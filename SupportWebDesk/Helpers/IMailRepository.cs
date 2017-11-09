@@ -7,6 +7,5 @@ namespace SupportWebDesk.Helpers
     {
         IEnumerable<MimeMessage> GetAllMails(bool markAsRead = false);
         IEnumerable<MimeMessage> GetUnreadMails(bool markAsRead = false);
-        IEnumerable<MimeMessage> GetUnreadMailsAndMarkAsRead();
     }
 }

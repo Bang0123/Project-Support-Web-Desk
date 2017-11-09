@@ -32,12 +32,7 @@ namespace SupportWebDesk.Helpers
             this.login = login;
             this.password = password;
         }
-
-        public IEnumerable<MimeMessage> GetUnreadMailsAndMarkAsRead()
-        {
-            return GetUnreadMails(true);
-        }
-
+        
         public IEnumerable<MimeMessage> GetUnreadMails(bool markAsRead = false)
         {
             var messages = new List<MimeMessage>();
