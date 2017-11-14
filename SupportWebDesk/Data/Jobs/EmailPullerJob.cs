@@ -32,7 +32,7 @@ namespace SupportWebDesk.Data.Jobs
                     Subject = message.Subject,
                     Body = message.HtmlBody ?? message.TextBody,
                     Sender = message.Sender == null ? null : message.Sender.Name + "," + message.Sender.Address,
-                    messageId = message.MessageId,
+                    MessageId = message.MessageId,
                     Date = message.Date == null ? DateTime.Now : message.Date.DateTime,
                     TicketCreated = false
                 };

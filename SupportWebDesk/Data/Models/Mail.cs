@@ -12,7 +12,7 @@ namespace SupportWebDesk.Data.Models
         public String Subject { get; set; }
         public String Body { get; set; }
         public String Sender { get; set; }
-        public String messageId { get; set; }
+        public String MessageId { get; set; }
         public DateTime Date { get; set; }
         public bool TicketCreated { get; set; }
     }

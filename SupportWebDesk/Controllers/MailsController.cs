@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SupportWebDesk.Data;
-using SupportWebDesk.Data.Jobs;
 using SupportWebDesk.Data.Models;
 
 namespace SupportWebDesk.Controllers
 {
     [Produces("application/json")]
     [Route("api/Mails")]
+    // Authorization policy for this API.
+    // [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme, Policy = "Access Resources")]
     public class MailsController : Controller
     {
         private readonly WebDeskContext _context;
