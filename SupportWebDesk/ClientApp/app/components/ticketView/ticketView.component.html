@@ -1,0 +1,42 @@
+<h1>Se Alle Tickets</h1>
+<div>
+    <h2>Åbne tickets right now</h2>
+    <p>4</p>
+</div>
+<div>
+    <h2>Critical tickets</h2>
+    <p>3</p>
+</div>
+
+<p *ngIf="!tickets">
+    <em>Loading...</em>
+</p>
+
+<table class='table' *ngIf="tickets">
+    <thead>
+        <tr>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Subject</th>
+            <th>Requester</th>
+            <th>Asignee</th>
+            <th>Last updated</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let ticket of tickets">
+            <td>{{ ticket.status }}</td>
+            <td>{{ ticket.priority}}</td>
+            <td>{{ ticket.subject}}</td>
+            <td>{{ ticket.requester.userName }}</td>
+            <td>{{ ticket.assignee.userName }}</td>
+            <td>{{ ticket.updatedAt }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>Current count:
+    <strong>{{ currentCount }}</strong>
+</p>
+
+<button (click)="incrementCounter()">Increment</button>

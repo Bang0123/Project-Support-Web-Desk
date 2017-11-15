@@ -33,7 +33,8 @@ namespace SupportWebDesk.Data.Jobs
                     Body = message.HtmlBody ?? message.TextBody,
                     Sender = message.Sender == null ? null : message.Sender.Name + "," + message.Sender.Address,
                     MessageId = message.MessageId,
-                    Date = message.Date == null ? DateTime.Now : message.Date.DateTime,
+                    CreatedAt = message.Date == null ? DateTime.Now : message.Date.DateTime,
+                    UpdatedAt = DateTime.Now,
                     TicketCreated = false
                 };
                 newMails.Add(mail);
