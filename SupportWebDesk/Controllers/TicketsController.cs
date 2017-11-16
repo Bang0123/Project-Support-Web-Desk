@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using SupportWebDesk.Auth;
 using SupportWebDesk.Data;
 using SupportWebDesk.Data.Models;
+using SupportWebDesk.Data.ViewModels;
 
 namespace SupportWebDesk.Controllers
 {
@@ -26,12 +27,35 @@ namespace SupportWebDesk.Controllers
 
         // GET: api/Tickets
         [HttpGet]
-        public IEnumerable<Ticket> GetTickets()
+        public IList<TicketViewModel> GetTickets()
         {
             // TODO HVORDAN F FILTERE MAN USERS LORT FRA MAN IKKE VIL HAVE MED I RESPONSEN.
-            return _context.Tickets
+            var ticks = _context.Tickets
                 .Include(ticket => ticket.Assignee)
                 .Include(ticket => ticket.Requester);
+            var allTickets = new List<TicketViewModel>();
+            foreach (var ticket in ticks)
+            {
+                var newAssignee = new UserViewModel() { Email = ticket.Assignee.Email, UserName = ticket.Assignee.UserName };
+                var newRequester = new UserViewModel(){ Email = ticket.Requester.Email, UserName = ticket.Requester.UserName};
+                var newTicket = new TicketViewModel(){Assignee = newAssignee, Body = ticket.Body, Requester = newRequester, Id = ticket.Id, Subject = ticket.Subject, CreatedAt = ticket.CreatedAt, Priority = ticket.Priority, UpdatedAt = ticket.UpdatedAt, Status = ticket.Status, Messages = ticket.Messages, Notes = ticket.Notes};
+                allTickets.Add(newTicket);
+            }
+            return allTickets;
+        }
+        // GET: api/Tickets/openamount
+        [HttpGet("openamount")]
+        public async Task<IActionResult> GetOpenTicketsAmount()
+        {
+            var amount = await _context.Tickets.CountAsync(x => x.Status == "Åben");
+            return Ok(amount);
+        }
+        // GET: api/Tickets/criticalamount
+        [HttpGet("criticalamount")]
+        public async Task<IActionResult> GetCriticalTicketAmount()
+        {
+            var amount = await _context.Tickets.CountAsync(x => x.Priority == "Kritisk");
+            return Ok(amount);
         }
 
         // GET: api/Tickets/5

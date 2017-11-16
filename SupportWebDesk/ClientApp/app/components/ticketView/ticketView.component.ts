@@ -1,36 +1,40 @@
-import { Component, Inject } from '@angular/core';
-import { Http } from '@angular/http';
+import { Component} from "@angular/core";
+import { TicketService, Ticket, User } from "../../services/ticket.service";
+import { DataService } from "../../services/data.service";
 
 @Component({
-    selector: 'ticketView',
-    templateUrl: './ticketView.component.html'
+  selector: "ticketView",
+  templateUrl: "./ticketView.component.html",
+  styleUrls: ["./ticketView.component.css"]
 })
 export class TicketViewComponent {
-    public tickets: Ticket[];
+  public tickets: Ticket[];
+  public criticalTickets: number;
+  public openTickets: number;
 
-    constructor(http: Http, @Inject('BASE_URL') baseUrl: string) {
-        http.get(baseUrl + '/api/Tickets').subscribe(result => {
-            this.tickets = result.json() as Ticket[];
-            console.log(result);
-        }, error => console.error(error));
-    }
-    public currentCount = 0;
+  constructor(private ticketService: TicketService, private dataservice:DataService) {
+    this.getTickets();
+    this.getCriticalAmount();
+    this.getOpenAmount();
+  }
 
-    public incrementCounter() {
-        this.currentCount++;
-    }
-}
+  getOpenAmount() {
+    this.ticketService.getOpenAmount().subscribe(result => {
+      this.openTickets = result.json() as number;
+    });
+  }
+  getCriticalAmount() {
+    this.ticketService.getcriticalAmount().subscribe(result => {
+      this.criticalTickets = result.json() as number;
+    });
+  }
+  getTickets() {
+    this.ticketService.getTickets().subscribe(result => {
+      this.tickets = result.json() as Ticket[];
+    });
+  }
 
-interface Ticket {
-    status:string;
-    priority:string;
-    subject:string;
-    requester:User;
-    assignee:User;
-    createdAt:string;
-    updatedAt:string;
-} 
-
-interface User {
-    userName:string;
+  goToTicket(ticket: Ticket) {
+    this.dataservice.changeCurrentTicket(ticket);
+  }
 }
