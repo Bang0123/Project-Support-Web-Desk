@@ -13,53 +13,31 @@
     <em>Loading...</em>
 </p>
 <hr>
-<table class="table table-condensed table-hover table-bordered table-responsive" *ngIf="tickets?.length > 0">
+<table class=" table table-condensed table-hover table-bordered table-responsive
+    " *ngIf="tickets?.length> 0">
     <thead>
         <tr>
             <th>Status</th>
-            <th>Priority</th>
-            <th>Subject</th>
-            <th>Requester</th>
-            <th>Asignee</th>
-            <th>Last updated</th>
+            <th>Prioritet</th>
+            <th>Overskrift</th>
+            <th>Anmoder</th>
+            <th>Agent</th>
+            <th>Sidst opdateret</th>
+            <th>Se Ticket</th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let ticket of tickets">
-            <td>{{ ticket.status }}</td>
-            <td>{{ ticket.priority}}</td>
-            <td>{{ ticket.subject}}</td>
-            <td>{{ ticket.requester.userName }}</td>
-            <td>{{ ticket.assignee.userName }}</td>
-            <td>{{ ticket.updatedAt | date:'HH:mm dd-MM-yyyy' }}</td>
-            <div>
-                <button (click)="goToTicket(ticket)" class="btn btn-primary" [routerLink]="['/ticket', {tick: 0}]">Se ticket</button>
-            </div>
+            <td (click)="getTickets('status')">{{ ticket.status }}</td>
+            <td (click)="getTickets('priority')">{{ ticket.priority}}</td>
+            <td (click)="getTickets('subject')">{{ ticket.subject}}</td>
+            <td (click)="getTickets('requester')">{{ ticket.requester.userName }}</td>
+            <td (click)="getTickets('assignee')">{{ ticket.assignee.userName }}</td>
+            <td (click)="getTickets('updatedAt')">{{ ticket.updatedAt | date:'HH:mm dd-MM-yyyy' }}</td>
+            <td>
+                <button (click)="goToTicket(ticket)" class="btn btn-primary" [routerLink]="['/ticket']">Se ticket</button>
+            </td>
         </tr>
     </tbody>
 </table>
 <hr>
-<ul class="pagination col-md-8">
-    <li>
-        <a href="tickets#">&laquo;</a>
-    </li>
-    <!--*ngFor="let page of pages; let myIndex = index"-->
-    <li>
-        <a href="tickets#">1</a>
-    </li>
-    <li>
-        <a href="tickets#">2</a>
-    </li>
-    <li>
-        <a href="tickets#">3</a>
-    </li>
-    <li>
-        <a href="tickets#">4</a>
-    </li>
-    <li>
-        <a href="tickets#">5</a>
-    </li>
-    <li>
-        <a href="tickets#">&raquo;</a>
-    </li>
-</ul>

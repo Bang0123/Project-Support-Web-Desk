@@ -60,7 +60,8 @@ namespace SupportWebDesk
                     RefreshTokenExpiration = TokenExpiration.Sliding,
                     AllowedCorsOrigins = new List<string>
                     {
-                        "http://localhost:5000"
+                        "http://localhost:5000",
+                        "http://localhost:4200",
                     } // Only for development.
                 }
             };

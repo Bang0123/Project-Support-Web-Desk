@@ -9,7 +9,7 @@ export class DataService {
   public currentTicket:Observable<Ticket>;
   private ticketSource:BehaviorSubject<Ticket>;
   constructor() {
-      let tick: Ticket = { id: 0, status: "", priority: "", subject: "", requester: { userName: "", email: "" }, assignee: { userName: "", email: "" }, createdAt: "", updatedAt: "", body: "" };
+      let tick: Ticket = { id: -1, status: "", priority: "", subject: "", requester: { userName: "", email: "" }, assignee: { userName: "", email: "" }, createdAt: "", updatedAt: "", body: "" };
       this.ticketSource = new BehaviorSubject<Ticket>(tick);
       this.currentTicket = this.ticketSource.asObservable();
     }

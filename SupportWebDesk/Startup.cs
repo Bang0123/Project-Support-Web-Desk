@@ -146,7 +146,12 @@ namespace SupportWebDesk
             app.UseIdentityServer();
             app.UseHangfireServer();
             app.UseHangfireDashboard();
-
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin();
+                builder.AllowAnyHeader();
+                builder.AllowAnyMethod();
+            });
             RecurringJob.AddOrUpdate(()=> new EmailPullerJob(ctx).GetMailsAndSaveToDb(env.IsProduction()), Cron.MinuteInterval(5));
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.

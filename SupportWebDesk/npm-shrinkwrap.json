@@ -44,7 +44,7 @@
     },
     "@angular/animations": {
       "version": "4.2.5",
-      "from": "@angular/animations@4.2.5",
+      "from": "https://registry.npmjs.org/@angular/animations/-/animations-4.2.5.tgz",
       "resolved": "https://registry.npmjs.org/@angular/animations/-/animations-4.2.5.tgz"
     },
     "@angular/cli": {

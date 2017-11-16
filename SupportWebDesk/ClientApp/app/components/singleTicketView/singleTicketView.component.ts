@@ -16,19 +16,9 @@ export class SingleTicketViewComponent {
     private router: Router,
     private dataservice: DataService
   ) {
-    if (this.route.snapshot.params["tick"]) {
-      dataservice.currentTicket.subscribe(ticket => {
+    dataservice.currentTicket.subscribe(ticket => {
         this.ticket = ticket;
-      });
-    } else {
-      this.getTicket();
-    }
-  }
-
-  getTicket() {
-    this.ticketService.getTickets().subscribe(result => {
-      this.ticket = result.json()[0] as Ticket;
-    });
+      });    
   }
 
   sendAnswer() {

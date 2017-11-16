@@ -1,5 +1,6 @@
 import { Injectable, Inject } from "@angular/core";
 import { Http } from "@angular/http";
+import { URLSearchParams } from "@angular/http";
 
 @Injectable()
 export class TicketService {
@@ -18,7 +19,7 @@ export class TicketService {
   }
 }
 
-export interface Ticket {
+export class Ticket {
   id:number;
   status: string;
   priority: string;
@@ -29,8 +30,7 @@ export interface Ticket {
   updatedAt: string;
   body:string;
 }
-
-export interface User {
+export class User {
   userName: string;
   email:string;
 }

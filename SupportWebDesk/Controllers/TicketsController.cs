@@ -29,10 +29,10 @@ namespace SupportWebDesk.Controllers
         [HttpGet]
         public IList<TicketViewModel> GetTickets()
         {
-            // TODO HVORDAN F FILTERE MAN USERS LORT FRA MAN IKKE VIL HAVE MED I RESPONSEN.
             var ticks = _context.Tickets
                 .Include(ticket => ticket.Assignee)
-                .Include(ticket => ticket.Requester);
+                .Include(ticket => ticket.Requester)
+                .OrderByDescending(x=>x.UpdatedAt);
             var allTickets = new List<TicketViewModel>();
             foreach (var ticket in ticks)
             {
