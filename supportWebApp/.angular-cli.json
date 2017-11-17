@@ -6,7 +6,7 @@
   "apps": [
     {
       "root": "src",
-      "outDir": "dist",
+      "outDir": "../SupportWebDesk/wwwroot",
       "assets": [
         "assets",
         "favicon.ico"
