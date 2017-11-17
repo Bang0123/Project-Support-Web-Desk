@@ -1,0 +1,54 @@
+<h1>Ticket</h1>
+<br>
+<div *ngIf="ticket.id > 0">
+    <div class="row">
+        <div class="col-sm-6">
+            <h3>{{ ticket.subject }}</h3>
+        </div>
+        <div class="col-sm-5">
+            <p>Ticket Id: {{ ticket.id }}</p>
+            <p>Status: {{ ticket.status }}</p>
+            <p>Prioritet: {{ ticket.priority }}</p>
+            <button (click)="goToLatestsAnswer()" class="btn btn-default">Gå til seneste svar i tråden</button>
+        </div>
+    </div>
+    <hr>
+    <div class="row text">
+        <div class="col-sm-3 small">
+            <p>Anmoder:
+                <br>{{ ticket.requester.userName }}</p>
+            <p>Ansvarshavende:
+                <br>{{ ticket.assignee.userName }}</p>
+            <p>Ticket lavet:
+                <br>{{ ticket.createdAt | date:'HH:mm dd-MM-yyyy' }}</p>
+            <p>Ticket sidst opdateret:
+                <br>{{ ticket.updatedAt | date:'HH:mm dd-MM-yyyy' }}</p>
+        </div>
+        <div class="text borders col-md-6">
+            <h4>Beskrivelse</h4>
+            <p>{{ ticket.body }}</p>
+            <div>
+                <textarea class="form-control" rows="4"></textarea>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <br>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="intern" checked> Intern
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="extern"> Ekstern
+                </label>
+            </div>
+            <br>
+            <button (click)="sendAnswer()" class="btn btn-default">Send svar</button>
+
+        </div>
+    </div>
+</div>
+<div *ngIf="ticket.id < 0">
+<h1>Ingen ticket valgt</h1>
+</div>

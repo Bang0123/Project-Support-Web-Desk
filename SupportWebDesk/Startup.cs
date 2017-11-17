@@ -57,10 +57,10 @@ namespace SupportWebDesk
             // Register the Swagger generator, defining one or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+                c.SwaggerDoc("v1", new Info { Title = "API", Version = "v1" });
                 // Set the comments path for the Swagger JSON and UI.
                 var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-                var xmlPath = Path.Combine(basePath, "TodoApi.xml");
+                var xmlPath = Path.Combine(basePath, "SupportWebDesk.xml");
                 c.IncludeXmlComments(xmlPath);
             });
 
@@ -147,6 +147,12 @@ namespace SupportWebDesk
             app.UseHangfireServer();
             app.UseHangfireDashboard();
 
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin();
+                builder.AllowAnyHeader();
+                builder.AllowAnyMethod();
+            });
             RecurringJob.AddOrUpdate(()=> new EmailPullerJob(ctx).GetMailsAndSaveToDb(env.IsProduction()), Cron.MinuteInterval(5));
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
