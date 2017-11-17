@@ -146,6 +146,7 @@ namespace SupportWebDesk
             app.UseIdentityServer();
             app.UseHangfireServer();
             app.UseHangfireDashboard();
+
             app.UseCors(builder =>
             {
                 builder.AllowAnyOrigin();
