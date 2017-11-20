@@ -9,7 +9,6 @@
     <p class="lead text-center">{{ criticalTickets }}</p>
   </div>
 </div>
-
 <p *ngIf="!dataSource.data">
   <em>Loading...</em>
 </p>
@@ -50,8 +49,6 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header> Se Ticket </mat-header-cell>
         <mat-cell *matCellDef="let row">
           <button (click)="goToTicket(row)" [routerLink]="['/ticket']" mat-raised-button color="primary">Se Ticket</button>
-
-
         </mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -62,4 +59,3 @@
   </div>
 <hr>
 </div>
-

@@ -25,32 +25,68 @@ namespace SupportWebDesk.Controllers
             _context = context;
         }
 
-        // GET: api/Tickets
+        /// <summary>
+        /// GET: api/Tickets
+        /// Returns all tickets
+        /// sorted by updatedat dsc
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IList<TicketViewModel> GetTickets()
         {
             var ticks = _context.Tickets
                 .Include(ticket => ticket.Assignee)
                 .Include(ticket => ticket.Requester)
-                .OrderByDescending(x=>x.UpdatedAt);
+                .OrderByDescending(x => x.UpdatedAt);
             var allTickets = new List<TicketViewModel>();
             foreach (var ticket in ticks)
             {
-                var newAssignee = new UserViewModel() { Email = ticket.Assignee.Email, UserName = ticket.Assignee.UserName };
-                var newRequester = new UserViewModel(){ Email = ticket.Requester.Email, UserName = ticket.Requester.UserName};
-                var newTicket = new TicketViewModel(){Assignee = newAssignee, Body = ticket.Body, Requester = newRequester, Id = ticket.Id, Subject = ticket.Subject, CreatedAt = ticket.CreatedAt, Priority = ticket.Priority, UpdatedAt = ticket.UpdatedAt, Status = ticket.Status, Messages = ticket.Messages, Notes = ticket.Notes};
+                var newAssignee = new UserViewModel()
+                {
+                    Email = ticket.Assignee.Email, UserName = ticket.Assignee.UserName 
+                    
+                };
+                var newRequester = new UserViewModel()
+                {
+                    Email = ticket.Requester.Email, UserName = ticket.Requester.UserName 
+                    
+                };
+                var newTicket = new TicketViewModel()
+                {
+                    Assignee = newAssignee,
+                    Body = ticket.Body,
+                    Requester = newRequester,
+                    Id = ticket.Id,
+                    Subject = ticket.Subject,
+                    CreatedAt = ticket.CreatedAt,
+                    Priority = ticket.Priority,
+                    UpdatedAt = ticket.UpdatedAt,
+                    Status = ticket.Status,
+                    Messages = ticket.Messages,
+                    Notes = ticket.Notes
+
+                };
                 allTickets.Add(newTicket);
             }
             return allTickets;
         }
-        // GET: api/Tickets/openamount
+        /// <summary>
+        /// GET: api/Tickets/openamount
+        /// Returns amount of tickets that are open
+        /// </summary>
+        /// <returns>integer</returns>
         [HttpGet("openamount")]
         public async Task<IActionResult> GetOpenTicketsAmount()
         {
             var amount = await _context.Tickets.CountAsync(x => x.Status == "Åben");
             return Ok(amount);
         }
-        // GET: api/Tickets/criticalamount
+        
+        /// <summary>
+        /// GET: api/Tickets/criticalamount
+        /// Returns amount of tickets that are critical
+        /// </summary>
+        /// <returns>integer</returns>
         [HttpGet("criticalamount")]
         public async Task<IActionResult> GetCriticalTicketAmount()
         {
