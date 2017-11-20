@@ -53,7 +53,7 @@ import { MatModuleModule } from './modules/mat-module/mat-module.module';
 export class AppModule {}
 
 export function getBaseUrl() {
-  return 'http://localhost:57954';
+  // return 'http://localhost:57954';
 
-  // return document.getElementsByTagName('base')[0].href;
+   return document.getElementsByTagName('base')[0].href;
 }
