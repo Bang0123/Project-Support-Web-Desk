@@ -53,15 +53,15 @@ namespace SupportWebDesk
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IDbInitializer, DbInitializer>();
 
-            // Register the Swagger generator, defining one or more Swagger documents
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info { Title = "API", Version = "v1" });
-                // Set the comments path for the Swagger JSON and UI.
-                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-                var xmlPath = Path.Combine(basePath, "SupportWebDesk.xml");
-                c.IncludeXmlComments(xmlPath);
-            });
+            //// Register the Swagger generator, defining one or more Swagger documents
+            //services.AddSwaggerGen(c =>
+            //{
+            //    c.SwaggerDoc("v1", new Info { Title = "API", Version = "v1" });
+            //    // Set the comments path for the Swagger JSON and UI.
+            //    var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+            //    var xmlPath = Path.Combine(basePath, "SupportWebDesk.xml");
+            //    c.IncludeXmlComments(xmlPath);
+            //});
 
             // begin identity
             services.AddIdentity<User, Role>()
@@ -106,10 +106,10 @@ namespace SupportWebDesk
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
-                    options.Authority = "http://localhost:5000/";
+                    options.Authority = "http://localhost:57954/";
                     options.RequireHttpsMetadata = false;
 
-                    options.ApiName = "SupportWebDeskAPI";
+                    options.ApiName = "WebAPI";
                 });
         }
 
@@ -152,31 +152,13 @@ namespace SupportWebDesk
             
             RecurringJob.AddOrUpdate(()=> new EmailPullerJob(ctx).GetMailsAndSaveToDb(env.IsProduction()), Cron.MinuteInterval(5));
 
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
+            //// Enable middleware to serve generated Swagger as a JSON endpoint.
+            //app.UseSwagger();
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
-            });
-
-            // Router on the server must match the router on the client (see app.routing.module.ts) to use PathLocationStrategy.
-            //var appRoutes = new[] {
-            //    "/home",
-            //    "/account/signin",
-            //    "/account/signup",
-            //    "/resources",
-            //    "/dashboard"
-            //};
-            //app.Use(async (context, next) =>
+            //// Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
+            //app.UseSwaggerUI(c =>
             //{
-            //    if (context.Request.Path.HasValue && appRoutes.Contains(context.Request.Path.Value))
-            //    {
-            //        context.Request.Path = new PathString("/");
-            //    }
-
-            //    await next();
+            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
             //});
 
             app.UseMvc(routes =>

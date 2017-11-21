@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +17,7 @@ namespace SupportWebDesk.Controllers
     [Produces("application/json")]
     [Route("api/Tickets")]
     // Authorization policy for this API.
-    // [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme, Policy = "Access Resources")]
+    [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme, Policy = "Access Resources")]
     public class TicketsController : Controller
     {
         private readonly WebDeskContext _context;
@@ -43,13 +45,15 @@ namespace SupportWebDesk.Controllers
             {
                 var newAssignee = new UserViewModel()
                 {
-                    Email = ticket.Assignee.Email, UserName = ticket.Assignee.UserName 
-                    
+                    Email = ticket.Assignee.Email,
+                    UserName = ticket.Assignee.UserName
+
                 };
                 var newRequester = new UserViewModel()
                 {
-                    Email = ticket.Requester.Email, UserName = ticket.Requester.UserName 
-                    
+                    Email = ticket.Requester.Email,
+                    UserName = ticket.Requester.UserName
+
                 };
                 var newTicket = new TicketViewModel()
                 {
@@ -81,7 +85,7 @@ namespace SupportWebDesk.Controllers
             var amount = await _context.Tickets.CountAsync(x => x.Status == "Åben");
             return Ok(amount);
         }
-        
+
         /// <summary>
         /// GET: api/Tickets/criticalamount
         /// Returns amount of tickets that are critical

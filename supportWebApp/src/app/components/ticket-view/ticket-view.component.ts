@@ -38,19 +38,19 @@ export class TicketViewComponent implements OnInit, AfterViewInit {
 
   getOpenAmount() {
     this.ticketService.getOpenAmount().subscribe(result => {
-      this.openTickets = result.json() as number;
+      this.openTickets = result as number;
     });
   }
 
   getCriticalAmount() {
     this.ticketService.getcriticalAmount().subscribe(result => {
-      this.criticalTickets = result.json() as number;
+      this.criticalTickets = result as number;
     });
   }
 
   getTickets() {
     this.ticketService.getTickets().subscribe(result => {
-      this.dataSource.data = result.json() as Ticket[];
+      this.dataSource.data = result as Ticket[];
     });
   }
 

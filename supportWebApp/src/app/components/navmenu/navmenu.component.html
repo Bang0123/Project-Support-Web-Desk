@@ -12,24 +12,34 @@
     <div class='clearfix'></div>
     <div class='navbar-collapse collapse'>
       <ul class='nav navbar-nav'>
-        <li [routerLinkActive]="['link-active']">
+        <li [routerLinkActive]="['link-active']" *ngIf="signedIn | async">
           <a [routerLink]="['/home']">
             <span class='glyphicon glyphicon-home'></span> Home
           </a>
         </li>
-        <li [routerLinkActive]="['link-active']">
+        <li [routerLinkActive]="['link-active']" *ngIf="signedIn | async">
           <a [routerLink]="['/tickets']">
             <span class='glyphicon glyphicon-th-list'></span> Tickets
           </a>
         </li>
-        <li [routerLinkActive]="['link-active']">
+        <li [routerLinkActive]="['link-active']" *ngIf="signedIn | async">
           <a [routerLink]="['/ticket']">
             <span class='glyphicon glyphicon-apple'></span> Ticket
           </a>
         </li>
-        <li [routerLinkActive]="['link-active']">
+        <li [routerLinkActive]="['link-active']" *ngIf="signedIn | async">
           <a [routerLink]="['/fetch-data']">
             <span class='glyphicon glyphicon-th-list'></span> Fetch data
+          </a>
+        </li>
+        <li [routerLinkActive]="['link-active']" *ngIf="(signedIn | async) === false">
+          <a [routerLink]="['/login']">
+            <span class='glyphicon glyphicon-log-in'></span> Login
+          </a>
+        </li>
+        <li [routerLinkActive]="['link-active']" *ngIf="signedIn | async">
+          <a (click)="signout()">
+            <span class='glyphicon glyphicon-log-in'></span> Logout
           </a>
         </li>
       </ul>
