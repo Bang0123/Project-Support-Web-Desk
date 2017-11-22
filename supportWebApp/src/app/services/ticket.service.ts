@@ -9,7 +9,7 @@ export class TicketService {
     private http: HttpClient,
     @Inject('BASE_URL') private baseUrl: string,
     private authenticationService: AuthenticationService
-  ) {}
+  ) { }
 
   getTickets() {
     return this.http.get(this.baseUrl + '/api/tickets', {
@@ -25,6 +25,26 @@ export class TicketService {
 
   getOpenAmount() {
     return this.http.get(this.baseUrl + '/api/tickets/openamount', {
+      headers: this.authenticationService.getAuthorizationHeader()
+    });
+  }
+
+  getAssigneesTickets() {
+    return this.http.get(
+      this.baseUrl + '/api/tickets/assignee/' + this.authenticationService.getUser().userName, {
+        headers: this.authenticationService.getAuthorizationHeader()
+      });
+  }
+
+  getAssigneesTicketsAmount() {
+    return this.http.get(
+      this.baseUrl + '/api/tickets/assigneeamount/' + this.authenticationService.getUser().userName, {
+        headers: this.authenticationService.getAuthorizationHeader()
+      });
+  }
+
+  getAmountOfNewTickets() {
+    return this.http.get(this.baseUrl + '/api/tickets/newamount', {
       headers: this.authenticationService.getAuthorizationHeader()
     });
   }

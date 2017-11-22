@@ -74,8 +74,8 @@ namespace SupportWebDesk.Data
 
         private async Task SeedTickets(WebDeskContext context)
         {
-            var prio = new[] { "Kritisk", "Høj", "Normal", "lav" };
-            var stat = new[] { "Åben", "Igang", "Lukket" };
+            var prio = new[] { Ticket.PRIORITY_CRITICAL, Ticket.PRIORITY_HIGH, Ticket.PRIORITY_NORMAL, Ticket.PRIORITY_LOW };
+            var stat = new[] { Ticket.STATUS_OPEN, Ticket.STATUS_ONGOING, Ticket.STATUS_CLOSED };
             var user = context.Users.First();
             if (context.Tickets.Any())
             {

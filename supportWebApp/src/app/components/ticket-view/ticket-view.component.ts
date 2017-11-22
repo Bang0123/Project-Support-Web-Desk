@@ -13,8 +13,6 @@ import { Observable } from 'rxjs/Observable';
   styleUrls: ['./ticket-view.component.css']
 })
 export class TicketViewComponent implements OnInit, AfterViewInit {
-  public criticalTickets: number;
-  public openTickets: number;
   dataSource: MatTableDataSource<Ticket> = new MatTableDataSource();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -27,6 +25,8 @@ export class TicketViewComponent implements OnInit, AfterViewInit {
     'updatedAt',
     'gototick'
   ];
+  public criticalTickets: number;
+  public openTickets: number;
 
   constructor(
     private ticketService: TicketService,

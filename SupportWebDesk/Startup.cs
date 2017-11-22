@@ -23,8 +23,6 @@ namespace SupportWebDesk
 {
     public class Startup
     {
-        private readonly SymmetricSecurityKey _signingKey;
-
         public Startup(IHostingEnvironment env, IConfiguration configuration)
         {
             var builder = new ConfigurationBuilder()
@@ -34,7 +32,6 @@ namespace SupportWebDesk
                 .AddEnvironmentVariables();
             Appsettings = builder.Build();
             Configuration = configuration;
-            _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Appsettings.GetConnectionString("SigningKey")));
         }
 
         public static IConfiguration Appsettings { get; set; }

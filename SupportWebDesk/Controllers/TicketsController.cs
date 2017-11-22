@@ -82,7 +82,7 @@ namespace SupportWebDesk.Controllers
         [HttpGet("openamount")]
         public async Task<IActionResult> GetOpenTicketsAmount()
         {
-            var amount = await _context.Tickets.CountAsync(x => x.Status == "Åben");
+            var amount = await _context.Tickets.CountAsync(ticket => ticket.Status == Ticket.STATUS_OPEN);
             return Ok(amount);
         }
 
@@ -94,8 +94,82 @@ namespace SupportWebDesk.Controllers
         [HttpGet("criticalamount")]
         public async Task<IActionResult> GetCriticalTicketAmount()
         {
-            var amount = await _context.Tickets.CountAsync(x => x.Priority == "Kritisk");
+            var amount = await _context.Tickets.CountAsync(ticket => ticket.Priority == Ticket.PRIORITY_CRITICAL);
             return Ok(amount);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("assigneeamount/{username}")]
+        public async Task<IActionResult> GetAssigneeTicketAmount([FromRoute] string username)
+        {
+            var amount = await _context.Tickets.CountAsync(
+                ticket => ticket.Assignee.UserName == username && ticket.Status != Ticket.STATUS_CLOSED
+            );
+            return Ok(amount);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("newamount")]
+        public async Task<IActionResult> GetNewAmountOfTickets()
+        {
+            var amount = await _context.Tickets.CountAsync(
+                ticket => DateTime.Now.Subtract(ticket.CreatedAt).Days <= Ticket.TICKET_15_DAYS_OLD
+                );
+            return Ok(amount);
+        }
+
+        /// <summary>
+        /// GET: api/Tickets/assignee/{username}
+        /// Returns all tickets
+        /// sorted by updatedat dsc
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("assignee/{username}")]
+        public IList<TicketViewModel> GetAssigneesTickets([FromRoute] string username)
+        {
+            var ticks = _context.Tickets
+                .Include(ticket => ticket.Assignee)
+                .Include(ticket => ticket.Requester)
+                .Where(ticket => ticket.Assignee.UserName == username && ticket.Status != Ticket.STATUS_CLOSED)
+                .OrderByDescending(ticket => ticket.UpdatedAt);
+
+            var allTickets = new List<TicketViewModel>();
+            foreach (var ticket in ticks)
+            {
+                var newAssignee = new UserViewModel()
+                {
+                    Email = ticket.Assignee.Email,
+                    UserName = ticket.Assignee.UserName
+                };
+                var newRequester = new UserViewModel()
+                {
+                    Email = ticket.Requester.Email,
+                    UserName = ticket.Requester.UserName
+                };
+                var newTicket = new TicketViewModel()
+                {
+                    Assignee = newAssignee,
+                    Body = ticket.Body,
+                    Requester = newRequester,
+                    Id = ticket.Id,
+                    Subject = ticket.Subject,
+                    CreatedAt = ticket.CreatedAt,
+                    Priority = ticket.Priority,
+                    UpdatedAt = ticket.UpdatedAt,
+                    Status = ticket.Status,
+                    Messages = ticket.Messages,
+                    Notes = ticket.Notes
+
+                };
+                allTickets.Add(newTicket);
+            }
+            return allTickets;
         }
 
         // GET: api/Tickets/5

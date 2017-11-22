@@ -14,7 +14,6 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { AppComponent } from './app.component';
 import { NavmenuComponent } from './components/navmenu/navmenu.component';
 import { HomeComponent } from './components/home/home.component';
-import { FetchdataComponent } from './components/fetchdata/fetchdata.component';
 import { TicketViewComponent } from './components/ticket-view/ticket-view.component';
 import { SingleTicketViewComponent } from './components/single-ticket-view/single-ticket-view.component';
 import { TicketService } from './services/ticket.service';
@@ -28,7 +27,6 @@ import { HttpClientModule } from '@angular/common/http';
     AppComponent,
     NavmenuComponent,
     HomeComponent,
-    FetchdataComponent,
     TicketViewComponent,
     SingleTicketViewComponent,
     LoginPageComponent
@@ -46,9 +44,8 @@ import { HttpClientModule } from '@angular/common/http';
     RouterModule.forRoot([
       { path: '', redirectTo: 'login', pathMatch: 'full', canActivate: [AuthGuard] },
       { path: 'login', component: LoginPageComponent},
-      { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+      { path: 'home', component: HomeComponent , canActivate: [AuthGuard] },
       { path: 'tickets', component: TicketViewComponent, canActivate: [AuthGuard] },
-      { path: 'fetch-data', component: FetchdataComponent, canActivate: [AuthGuard] },
       { path: 'ticket', component: SingleTicketViewComponent, canActivate: [AuthGuard] },
       { path: '**', redirectTo: 'login' }
     ])
