@@ -45,3 +45,7 @@ body {
   border-top-right-radius: 0;
 }
 
+.progress-comp {
+  margin: auto;
+  margin-top: 10px;
+}

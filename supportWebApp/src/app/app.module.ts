@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
@@ -21,6 +21,8 @@ import { DataService } from './services/data.service';
 import { MatModuleModule } from './modules/mat-module/mat-module.module';
 import { LoginPageComponent } from './components/login-page/login-page.component';
 import { HttpClientModule } from '@angular/common/http';
+// import { OAuthConfig } from './oauth.config';
+
 
 @NgModule({
   declarations: [
@@ -57,14 +59,24 @@ import { HttpClientModule } from '@angular/common/http';
     AuthGuard,
     AuthenticationService,
     IdentityService,
-    OAuthService
+    OAuthService,
+    // OAuthConfig,
+    // {
+    // provide: APP_INITIALIZER,
+    // useFactory: initOAuth,
+    // deps: [OAuthConfig],
+    // multi: true
+    // },
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
 
 export function getBaseUrl() {
-   return 'http://localhost:57954';
+  return 'http://localhost:5000';
 
   // return document.getElementsByTagName('base')[0].href;
 }
+// export function initOAuth(oAuthConfig: OAuthConfig): Function {
+//   return () => oAuthConfig.load();
+// }

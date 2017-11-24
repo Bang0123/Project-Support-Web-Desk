@@ -21,8 +21,15 @@ namespace SupportWebDesk.Data.Jobs
         }
         public void GetMailsAndSaveToDb(bool markAsRead = false)
         {
-            var loginDetails = Startup.Appsettings.GetSection("EmailLogin");
-            _mailRepo = InitMailRepo("imap.gmail.com", 993, true, loginDetails["username"], loginDetails["password"]);
+            var loginDetails = Config.Appsettings.GetSection("EmailLogin");
+            var mailDetails = Config.Appsettings.GetSection("MailOptions");
+            _mailRepo = InitMailRepo(
+                mailDetails["server"],
+                Convert.ToInt32(mailDetails["port"]),
+                Convert.ToBoolean(mailDetails["ssl"]),
+                loginDetails["username"],
+                loginDetails["password"]
+                );
             var mails = _mailRepo.GetUnreadMails(markAsRead: markAsRead);
             var newMails = new List<Mail>();
             foreach (var message in mails)

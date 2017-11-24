@@ -17,12 +17,12 @@ export class AppComponent implements OnInit {
     this.oAuthService.scope = 'openid offline_access WebAPI profile roles';
     this.oAuthService.setStorage(this.authenticationService.storage);
     // this.oAuthService.issuer = "http://angularspawebapi.azurewebsites.net";
-    this.oAuthService.issuer = 'http://localhost:57954';
+    this.oAuthService.issuer = 'http://localhost:5000';
     this.oAuthService.oidc = false;
     this.oAuthService.requireHttps = false;
 
     // const url: string = 'http://angularspawebapi.azurewebsites.net/.well-known/openid-configuration';
-    const url = 'http://localhost:57954/.well-known/openid-configuration';
+    const url = 'http://localhost:5000/.well-known/openid-configuration';
 
     // Loads Discovery Document.
     this.oAuthService.loadDiscoveryDocument(url);
@@ -35,9 +35,6 @@ export class AppComponent implements OnInit {
     }
   }
 
-
   ngOnInit() {
   }
-
-
 }

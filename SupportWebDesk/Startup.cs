@@ -30,11 +30,10 @@ namespace SupportWebDesk
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
-            Appsettings = builder.Build();
+            Config.Appsettings = builder.Build();
             Configuration = configuration;
         }
 
-        public static IConfiguration Appsettings { get; set; }
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -42,9 +41,9 @@ namespace SupportWebDesk
         {
             // mvs hangfire and dbcontext
             services.AddMvc();
-            services.AddHangfire(x => x.UseSqlServerStorage(Appsettings.GetConnectionString("SupportWebDeskContext")));
+            services.AddHangfire(x => x.UseSqlServerStorage(Config.Appsettings.GetConnectionString("SupportWebDeskContext")));
             services.AddDbContext<WebDeskContext>(options =>
-                options.UseSqlServer(Appsettings.GetConnectionString("SupportWebDeskContext")));
+                options.UseSqlServer(Config.Appsettings.GetConnectionString("SupportWebDeskContext")));
             // Transient services
             services.AddTransient<EmailPullerJob>();
             services.AddTransient<IEmailSender, EmailSender>();
@@ -103,10 +102,10 @@ namespace SupportWebDesk
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
-                    options.Authority = "http://localhost:57954/";
+                    options.Authority = Config.AUTHORITY;
                     options.RequireHttpsMetadata = false;
 
-                    options.ApiName = "WebAPI";
+                    options.ApiName = Config.API_NAME;
                 });
         }
 
@@ -117,7 +116,7 @@ namespace SupportWebDesk
             IServiceProvider serviceProvider,
             WebDeskContext ctx)
         {
-            loggerFactory.AddConsole(Appsettings.GetSection("Logging"));
+            loggerFactory.AddConsole(Config.Appsettings.GetSection("Logging"));
             loggerFactory.AddDebug();
 
             ctx.Database.EnsureCreated();

@@ -4,11 +4,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4;
 using IdentityServer4.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace SupportWebDesk
 {
     public class Config
     {
+        public const string AUTHORITY = "http://localhost:5000/";
+        public const string API_NAME = "WebAPI";
+        public const string CLIENT_ID = "SupportWebDesk";
+
+        private const string ROLES = "roles";
+        private const string ROLE = "role";
+
+        public static IConfiguration Appsettings { get; set; }
         // Identity resources (used by UserInfo endpoint).
         public static IEnumerable<IdentityResource> GetIdentityResources()
         {
@@ -16,7 +25,7 @@ namespace SupportWebDesk
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResource("roles", new List<string> { "role" })
+                new IdentityResource(ROLES, new List<string> { ROLE })
             };
         }
 
@@ -25,8 +34,8 @@ namespace SupportWebDesk
         {
             return new List<ApiResource>
             {
-                new ApiResource("WebAPI" ) {
-                    UserClaims = { "role" }
+                new ApiResource(API_NAME) {
+                    UserClaims = { ROLE }
                 }
             };
         }
@@ -40,7 +49,7 @@ namespace SupportWebDesk
                 // http://docs.identityserver.io/en/release/reference/client.html.
                 new Client
                 {
-                    ClientId = "SupportWebDesk",
+                    ClientId = CLIENT_ID,
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword, // Resource Owner Password Credential grant.
                     AllowAccessTokensViaBrowser = true,
                     RequireClientSecret = false, // This client does not need a secret to request tokens from the token endpoint.
@@ -50,8 +59,8 @@ namespace SupportWebDesk
                     AllowedScopes = {
                         IdentityServerConstants.StandardScopes.OpenId, // For UserInfo endpoint.
                         IdentityServerConstants.StandardScopes.Profile,
-                        "roles",
-                        "WebAPI"
+                        ROLES,
+                        API_NAME
                     },
                     AllowOfflineAccess = true, // For refresh token.
                     RefreshTokenUsage = TokenUsage.OneTimeOnly,
@@ -61,7 +70,7 @@ namespace SupportWebDesk
                     AllowedCorsOrigins = new List<string>
                     {
                         "http://localhost:4200"
-                    } // Only for development.
+                    } // Only for development. Angular dev server
                 }
             };
         }
