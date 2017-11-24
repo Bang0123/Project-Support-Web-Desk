@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavmenuComponent } from './components/navmenu/navmenu.component';
 import { OAuthService } from 'angular-oauth2-oidc';
-
+import { Title } from '@angular/platform-browser';
 import { AuthenticationService } from './services/authentication.service';
 
 @Component({
@@ -11,7 +11,9 @@ import { AuthenticationService } from './services/authentication.service';
 })
 export class AppComponent implements OnInit {
   constructor(private oAuthService: OAuthService,
-    private authenticationService: AuthenticationService) {
+    private authenticationService: AuthenticationService,
+    title: Title) {
+    title.setTitle('Support Web Desk');
     // angular-oauth2-oidc configuration.
     this.oAuthService.clientId = 'SupportWebDesk';
     this.oAuthService.scope = 'openid offline_access WebAPI profile roles';
