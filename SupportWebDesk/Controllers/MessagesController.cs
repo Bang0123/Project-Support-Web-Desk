@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SupportWebDesk.Data;
@@ -11,59 +13,59 @@ using SupportWebDesk.Data.Models;
 namespace SupportWebDesk.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Mails")]
+    [Route("api/Messages")]
     // Authorization policy for this API.
     [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme, Policy = Config.POLICY_USER)]
-    public class MailsController : Controller
+    public class MessagesController : Controller
     {
         private readonly WebDeskContext _context;
 
-        public MailsController(WebDeskContext context)
+        public MessagesController(WebDeskContext context)
         {
             _context = context;
         }
 
-        // GET: api/Mails
+        // GET: api/Messages
         [HttpGet]
-        public IEnumerable<Mail> GetMails()
+        public IEnumerable<Message> GetMessages()
         {
-            return _context.Mails;
+            return _context.Messages;
         }
 
-        // GET: api/Mails/5
+        // GET: api/Messages/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetMail([FromRoute] int id)
+        public async Task<IActionResult> GetMessage([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var mail = await _context.Mails.SingleOrDefaultAsync(m => m.Id == id);
+            var message = await _context.Messages.SingleOrDefaultAsync(m => m.Id == id);
 
-            if (mail == null)
+            if (message == null)
             {
                 return NotFound();
             }
 
-            return Ok(mail);
+            return Ok(message);
         }
 
-        // PUT: api/Mails/5
+        // PUT: api/Messages/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMail([FromRoute] int id, [FromBody] Mail mail)
+        public async Task<IActionResult> PutMessage([FromRoute] int id, [FromBody] Message message)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != mail.Id)
+            if (id != message.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(mail).State = EntityState.Modified;
+            _context.Entry(message).State = EntityState.Modified;
 
             try
             {
@@ -71,7 +73,7 @@ namespace SupportWebDesk.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MailExists(id))
+                if (!MessageExists(id))
                 {
                     return NotFound();
                 }
@@ -84,45 +86,45 @@ namespace SupportWebDesk.Controllers
             return NoContent();
         }
 
-        // POST: api/Mails
+        // POST: api/Messages
         [HttpPost]
-        public async Task<IActionResult> PostMail([FromBody] Mail mail)
+        public async Task<IActionResult> PostMessage([FromBody] Message message)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Mails.Add(mail);
+            _context.Messages.Add(message);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetMail", new { id = mail.Id }, mail);
+            return CreatedAtAction("GetMessage", new { id = message.Id }, message);
         }
 
-        // DELETE: api/Mails/5
+        // DELETE: api/Messages/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMail([FromRoute] int id)
+        public async Task<IActionResult> DeleteMessage([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var mail = await _context.Mails.SingleOrDefaultAsync(m => m.Id == id);
-            if (mail == null)
+            var message = await _context.Messages.SingleOrDefaultAsync(m => m.Id == id);
+            if (message == null)
             {
                 return NotFound();
             }
 
-            _context.Mails.Remove(mail);
+            _context.Messages.Remove(message);
             await _context.SaveChangesAsync();
 
-            return Ok(mail);
+            return Ok(message);
         }
 
-        private bool MailExists(int id)
+        private bool MessageExists(int id)
         {
-            return _context.Mails.Any(e => e.Id == id);
+            return _context.Messages.Any(e => e.Id == id);
         }
     }
 }

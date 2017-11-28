@@ -11,9 +11,10 @@ using System;
 namespace SupportWebDesk.Migrations
 {
     [DbContext(typeof(WebDeskContext))]
-    partial class WebDeskContextModelSnapshot : ModelSnapshot
+    [Migration("20171128132523_sending_messages")]
+    partial class sending_messages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -230,11 +231,11 @@ namespace SupportWebDesk.Migrations
 
                     b.Property<string>("MessageId");
 
-                    b.Property<bool>("Processed");
-
                     b.Property<string>("Sender");
 
                     b.Property<string>("Subject");
+
+                    b.Property<bool>("TicketCreated");
 
                     b.Property<DateTime>("UpdatedAt");
 
@@ -253,8 +254,6 @@ namespace SupportWebDesk.Migrations
                     b.Property<string>("Body");
 
                     b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("Sender");
 
                     b.Property<int?>("TicketId");
 
@@ -310,7 +309,7 @@ namespace SupportWebDesk.Migrations
 
                     b.Property<string>("Priority");
 
-                    b.Property<string>("Requester");
+                    b.Property<string>("RequesterId");
 
                     b.Property<string>("Status");
 
@@ -321,6 +320,8 @@ namespace SupportWebDesk.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AssigneeId");
+
+                    b.HasIndex("RequesterId");
 
                     b.ToTable("Tickets");
                 });
@@ -413,6 +414,10 @@ namespace SupportWebDesk.Migrations
                     b.HasOne("SupportWebDesk.Auth.User", "Assignee")
                         .WithMany()
                         .HasForeignKey("AssigneeId");
+
+                    b.HasOne("SupportWebDesk.Auth.User", "Requester")
+                        .WithMany()
+                        .HasForeignKey("RequesterId");
                 });
 #pragma warning restore 612, 618
         }

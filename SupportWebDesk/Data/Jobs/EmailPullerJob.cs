@@ -42,7 +42,7 @@ namespace SupportWebDesk.Data.Jobs
                     MessageId = message.MessageId,
                     CreatedAt = message.Date == null ? DateTime.Now : message.Date.DateTime,
                     UpdatedAt = DateTime.Now,
-                    TicketCreated = false
+                    Processed = false
                 };
                 newMails.Add(mail);
             }

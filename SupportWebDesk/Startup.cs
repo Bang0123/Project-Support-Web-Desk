@@ -63,6 +63,7 @@ namespace SupportWebDesk
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<WebDeskContext>()
                 .AddDefaultTokenProviders();
+
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -80,11 +81,11 @@ namespace SupportWebDesk
             services.AddAuthorization(options =>
             {
                 // Policy for dashboard: only administrator role.
-                options.AddPolicy("Manage Accounts", policy => policy.RequireRole("administrator"));
+                options.AddPolicy(Config.POLICY_ADMIN, policy => policy.RequireRole(Config.ROLE_ADMIN));
                 // Policy for resources: user or administrator roles. 
-                options.AddPolicy("Access Resources", policy => policy.RequireRole("administrator", "user"));
+                options.AddPolicy(Config.POLICY_USER, policy => policy.RequireRole(Config.ROLE_ADMIN, Config.ROLE_USER));
             });
-            
+
             // Adds IdentityServer.
             services.AddIdentityServer()
                 // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
@@ -110,7 +111,7 @@ namespace SupportWebDesk
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, 
+        public void Configure(IApplicationBuilder app,
             IHostingEnvironment env,
             ILoggerFactory loggerFactory,
             IServiceProvider serviceProvider,
@@ -145,8 +146,9 @@ namespace SupportWebDesk
             app.UseIdentityServer();
             app.UseHangfireServer();
             app.UseHangfireDashboard();
-            
-            RecurringJob.AddOrUpdate(()=> new EmailPullerJob(ctx).GetMailsAndSaveToDb(env.IsProduction()), Cron.MinuteInterval(5));
+
+            RecurringJob.AddOrUpdate(() => new EmailPullerJob(ctx).GetMailsAndSaveToDb(!env.IsDevelopment()), Cron.MinuteInterval(5));
+            RecurringJob.AddOrUpdate(() => new TicketsControlJob(ctx).invoke(), Cron.MinuteInterval(5));
 
             //// Enable middleware to serve generated Swagger as a JSON endpoint.
             //app.UseSwagger();

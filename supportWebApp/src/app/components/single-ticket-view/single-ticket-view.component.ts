@@ -4,6 +4,7 @@ import { Ticket } from '../../models/ticket';
 import { User } from '../../models/user';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DataService } from '../../services/data.service';
+import { Message } from '../../models/message';
 
 @Component({
   selector: 'app-single-ticket-view',
@@ -12,7 +13,7 @@ import { DataService } from '../../services/data.service';
 })
 export class SingleTicketViewComponent implements OnInit {
   public ticket: Ticket;
-
+  body: string;
   constructor(
     private ticketService: TicketService,
     private route: ActivatedRoute,
@@ -23,9 +24,18 @@ export class SingleTicketViewComponent implements OnInit {
       this.ticket = ticket;
     });
   }
-  ngOnInit() {}
+  ngOnInit() { }
   sendAnswer() {
     console.log('sendAnswer clicked', this);
+    const msg = new Message();
+    msg.body = this.body;
+    msg.ticketId = this.ticket.id;
+    msg.createdAt = new Date();
+    msg.updatedAt = new Date();
+    this.ticketService.postMessage(msg).subscribe((result) => {
+      console.log('Result obj', result);
+      this.ticket.messages.push(result as Message);
+    });
   }
 
   goToLatestsAnswer() {

@@ -2,6 +2,8 @@ import { Injectable, Inject } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
 import { AuthenticationService } from './authentication.service';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { Message } from '../models/message';
+import { User } from '../models/user';
 
 @Injectable()
 export class TicketService {
@@ -12,39 +14,57 @@ export class TicketService {
   ) { }
 
   getTickets() {
-    return this.http.get(this.baseUrl + '/api/tickets', {
+    const apiUrl = '/api/tickets';
+    return this.http.get(this.baseUrl + apiUrl, {
       headers: this.authenticationService.getAuthorizationHeader()
     });
   }
 
   getcriticalAmount() {
-    return this.http.get(this.baseUrl + '/api/tickets/criticalamount', {
+    const apiUrl = '/api/tickets/criticalamount';
+    return this.http.get(this.baseUrl + apiUrl, {
       headers: this.authenticationService.getAuthorizationHeader()
     });
   }
 
   getOpenAmount() {
-    return this.http.get(this.baseUrl + '/api/tickets/openamount', {
+    const apiUrl = '/api/tickets/openamount';
+    return this.http.get(this.baseUrl + apiUrl, {
+      headers: this.authenticationService.getAuthorizationHeader()
+    });
+  }
+
+  getAmountOfNewTickets() {
+    const apiUrl = '/api/tickets/newamount';
+    return this.http.get(this.baseUrl + apiUrl, {
       headers: this.authenticationService.getAuthorizationHeader()
     });
   }
 
   getAssigneesTickets() {
+    const apiUrl = '/api/tickets/assignee/';
     return this.http.get(
-      this.baseUrl + '/api/tickets/assignee/' + this.authenticationService.getUser().userName, {
+      this.baseUrl + apiUrl + this.authenticationService.getUser().userName, {
         headers: this.authenticationService.getAuthorizationHeader()
       });
   }
 
   getAssigneesTicketsAmount() {
+    const apiUrl = '/api/tickets/assigneeamount/';
     return this.http.get(
-      this.baseUrl + '/api/tickets/assigneeamount/' + this.authenticationService.getUser().userName, {
+      this.baseUrl + apiUrl + this.authenticationService.getUser().userName, {
         headers: this.authenticationService.getAuthorizationHeader()
       });
   }
 
-  getAmountOfNewTickets() {
-    return this.http.get(this.baseUrl + '/api/tickets/newamount', {
+  postMessage(message: Message) {
+    const apiUrl = '/api/messages';
+    const msg = message;
+    const usr = this.authenticationService.getUser();
+    msg.author = new User();
+    msg.author.email = usr.email;
+    msg.author.userName = usr.userName;
+    return this.http.post(this.baseUrl + apiUrl, { msg }, {
       headers: this.authenticationService.getAuthorizationHeader()
     });
   }

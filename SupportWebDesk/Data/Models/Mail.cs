@@ -15,6 +15,6 @@ namespace SupportWebDesk.Data.Models
         public String MessageId { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime CreatedAt { get; set; }
-        public bool TicketCreated { get; set; }
+        public bool Processed { get; set; }
     }
 }

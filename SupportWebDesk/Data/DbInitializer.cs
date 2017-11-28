@@ -19,6 +19,7 @@ namespace SupportWebDesk.Data
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         private static Random random = new Random();
+        private string[] senders = { "Anders@gmail.com", "Torben@gmail.com", "Rasmus@gmail.com", "bro@gmail.com", "hans@gmail.com" };
 
         /// <summary>
         /// constructor
@@ -60,39 +61,55 @@ namespace SupportWebDesk.Data
             {
                 return; // Db has been seeded.
             }
-            var mails = new List<Mail>()
-            {
-                new Mail(){Body = RandomString(4), CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, MessageId = RandomString(6), Sender = "admin@gmail.com", Subject = RandomString(6), TicketCreated = false},
-                new Mail(){Body = RandomString(4), CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, MessageId = RandomString(6), Sender = "admin@gmail.com", Subject = RandomString(9), TicketCreated = false},
-                new Mail(){Body = RandomString(6), CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, MessageId = RandomString(6), Sender = "admin@gmail.com", Subject = RandomString(12), TicketCreated = false},
-                new Mail(){Body = RandomString(8), CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, MessageId = RandomString(6), Sender = "admin@gmail.com", Subject = RandomString(16), TicketCreated = false},
-                new Mail(){Body = RandomString(10), CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, MessageId = RandomString(6), Sender = "admin@gmail.com", Subject = RandomString(25), TicketCreated = false},
-            };
+            var mails = CreateMails(12);
             await context.Mails.AddRangeAsync(mails);
             await context.SaveChangesAsync();
         }
 
+        private List<Mail> CreateMails(int amount)
+        {
+            var mails = new List<Mail>();
+            for (int i = 0; i < amount; i++)
+            {
+                mails.Add(
+                    new Mail() { Body = RandomString(10), CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, MessageId = RandomString(6), Sender = senders[random.Next(0, senders.Length - 1)], Subject = RandomString(25), Processed = false });
+            }
+            return mails;
+        }
+
         private async Task SeedTickets(WebDeskContext context)
         {
-            var prio = new[] { Ticket.PRIORITY_CRITICAL, Ticket.PRIORITY_HIGH, Ticket.PRIORITY_NORMAL, Ticket.PRIORITY_LOW };
-            var stat = new[] { Ticket.STATUS_OPEN, Ticket.STATUS_ONGOING, Ticket.STATUS_CLOSED };
-            var user = context.Users.First();
             if (context.Tickets.Any())
             {
                 return; // Db has been seeded.
             }
-            var tickets = new List<Ticket>()
-            {
-                new Ticket(){ Assignee = user,Requester = user, Body = RandomString(10), CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, Subject = RandomString(6), Priority = prio[random.Next(0, prio.Length-1)], Status = stat[random.Next(0, stat.Length-1)]},
-                new Ticket(){Assignee = user,Requester = user, Body = RandomString(10), CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, Subject = RandomString(6),
-                    Priority = prio[random.Next(0, prio.Length-1)],Status = stat[random.Next(0, stat.Length-1)]},
-                new Ticket(){ Assignee = user,Requester = user, Body = RandomString(10), CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, Subject = RandomString(6),Priority = prio[random.Next(0, prio.Length-1)], Status = stat[random.Next(0, stat.Length-1)]},
-                new Ticket(){ Assignee = user,Requester = user, Body = RandomString(10), CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, Subject = RandomString(6),Priority = prio[random.Next(0, prio.Length-1)], Status = stat[random.Next(0, stat.Length-1)]},
-                new Ticket(){ Assignee = user,Requester = user, Body = RandomString(10), CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, Subject = RandomString(6),Priority = prio[random.Next(0, prio.Length-1)], Status = stat[random.Next(0, stat.Length-1)]},
-                new Ticket(){ Assignee = user, Requester = user, Body = RandomString(10), CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, Subject = RandomString(6),Priority = prio[random.Next(0, prio.Length-1)], Status = stat[random.Next(0, stat.Length-1)]},
-            };
+            var tickets = CreateTickets(12, context);
             await context.Tickets.AddRangeAsync(tickets);
             await context.SaveChangesAsync();
+        }
+
+        private List<Ticket> CreateTickets(int amount, WebDeskContext ctx)
+        {
+            var user = ctx.Users.ToList();
+            var prio = new[] { Ticket.PRIORITY_CRITICAL, Ticket.PRIORITY_HIGH, Ticket.PRIORITY_NORMAL, Ticket.PRIORITY_LOW };
+            var stat = new[] { Ticket.STATUS_OPEN, Ticket.STATUS_ONGOING, Ticket.STATUS_CLOSED };
+            var tickets = new List<Ticket>();
+            for (int i = 0; i < amount; i++)
+            {
+                tickets.Add(
+                    new Ticket()
+                    {
+                        Assignee = user[random.Next(0, user.Count() - 1)],
+                        Requester = senders[random.Next(0, senders.Length - 1)],
+                        Body = RandomString(10),
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now,
+                        Subject = RandomString(6),
+                        Priority = prio[random.Next(0, prio.Length - 1)],
+                        Status = stat[random.Next(0, stat.Length - 1)]
+                    });
+            }
+            return tickets;
         }
 
         private async Task SeedUsers(WebDeskContext context)
@@ -134,6 +151,35 @@ namespace SupportWebDesk.Data
                     new Claim(type: JwtClaimTypes.FamilyName, value: user.LastName),
                 };
                 await _userManager.AddClaimsAsync(adminUser, claims);
+            }
+
+            var bruger = new User
+            {
+                FirstName = "Bruger",
+                LastName = "Bruger",
+                AccessFailedCount = 0,
+                Email = "Bruger@gmail.com",
+                EmailConfirmed = false,
+                LockoutEnabled = false,
+                NormalizedEmail = "BRUGER@GMAIL.COM",
+                NormalizedUserName = "BRUGER@GMAIL.COM",
+                TwoFactorEnabled = false,
+                UserName = "Bruger@gmail.com"
+            };
+
+            var resulte = await _userManager.CreateAsync(bruger, "Bruger01*");
+
+            if (resulte.Succeeded)
+            {
+                var brugerUser = await _userManager.FindByNameAsync(bruger.UserName);
+                // Assigns the administrator role.
+                await _userManager.AddToRoleAsync(brugerUser, "user");
+                // Assigns claims.
+                var claims = new List<Claim> {
+                    new Claim(type: JwtClaimTypes.GivenName, value: bruger.FirstName),
+                    new Claim(type: JwtClaimTypes.FamilyName, value: bruger.LastName),
+                };
+                await _userManager.AddClaimsAsync(brugerUser, claims);
             }
         }
     }

@@ -12,7 +12,7 @@ namespace SupportWebDesk.Controllers
     [Produces("application/json")]
     [Route("api/Seeder")]
     // Authorization policy for this API.
-    [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme, Policy = "Access Resources")]
+    //[Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme, Policy = "Access Resources")]
     public class SeederController : Controller
     {
         private readonly WebDeskContext _context;

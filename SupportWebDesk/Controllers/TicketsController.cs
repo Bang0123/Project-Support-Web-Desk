@@ -17,7 +17,7 @@ namespace SupportWebDesk.Controllers
     [Produces("application/json")]
     [Route("api/Tickets")]
     // Authorization policy for this API.
-    [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme, Policy = "Access Resources")]
+    [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme, Policy = Config.POLICY_USER)]
     public class TicketsController : Controller
     {
         private readonly WebDeskContext _context;
@@ -39,6 +39,7 @@ namespace SupportWebDesk.Controllers
             var ticks = _context.Tickets
                 .Include(ticket => ticket.Assignee)
                 .Include(ticket => ticket.Requester)
+                .Include(ticket => ticket.Messages)
                 .OrderByDescending(x => x.UpdatedAt);
             var allTickets = new List<TicketViewModel>();
             foreach (var ticket in ticks)
@@ -49,17 +50,11 @@ namespace SupportWebDesk.Controllers
                     UserName = ticket.Assignee.UserName
 
                 };
-                var newRequester = new UserViewModel()
-                {
-                    Email = ticket.Requester.Email,
-                    UserName = ticket.Requester.UserName
-
-                };
                 var newTicket = new TicketViewModel()
                 {
                     Assignee = newAssignee,
                     Body = ticket.Body,
-                    Requester = newRequester,
+                    Requester = ticket.Requester,
                     Id = ticket.Id,
                     Subject = ticket.Subject,
                     CreatedAt = ticket.CreatedAt,
@@ -76,9 +71,8 @@ namespace SupportWebDesk.Controllers
         }
         /// <summary>
         /// GET: api/Tickets/openamount
-        /// Returns amount of tickets that are open
         /// </summary>
-        /// <returns>integer</returns>
+        /// <returns>Returns amount of tickets that are open</returns>
         [HttpGet("openamount")]
         public async Task<IActionResult> GetOpenTicketsAmount()
         {
@@ -88,9 +82,8 @@ namespace SupportWebDesk.Controllers
 
         /// <summary>
         /// GET: api/Tickets/criticalamount
-        /// Returns amount of tickets that are critical
         /// </summary>
-        /// <returns>integer</returns>
+        /// <returns>Returns amount of tickets that are critical</returns>
         [HttpGet("criticalamount")]
         public async Task<IActionResult> GetCriticalTicketAmount()
         {
@@ -99,22 +92,9 @@ namespace SupportWebDesk.Controllers
         }
 
         /// <summary>
-        /// 
+        /// GET: api/Tickets/newamount
         /// </summary>
-        /// <returns></returns>
-        [HttpGet("assigneeamount/{username}")]
-        public async Task<IActionResult> GetAssigneeTicketAmount([FromRoute] string username)
-        {
-            var amount = await _context.Tickets.CountAsync(
-                ticket => ticket.Assignee.UserName == username && ticket.Status != Ticket.STATUS_CLOSED
-            );
-            return Ok(amount);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns amount of tickets that are new</returns>
         [HttpGet("newamount")]
         public async Task<IActionResult> GetNewAmountOfTickets()
         {
@@ -125,17 +105,29 @@ namespace SupportWebDesk.Controllers
         }
 
         /// <summary>
-        /// GET: api/Tickets/assignee/{username}
-        /// Returns all tickets
-        /// sorted by updatedat dsc
+        /// GET: api/Tickets/assigneeamount/{username}
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns amount of tickets that are assigned to the "user"</returns>
+        [HttpGet("assigneeamount/{username}")]
+        public async Task<IActionResult> GetAssigneeTicketAmount([FromRoute] string username)
+        {
+            var amount = await _context.Tickets.CountAsync(
+                ticket => ticket.Assignee.UserName == username && ticket.Status != Ticket.STATUS_CLOSED
+            );
+            return Ok(amount);
+        }
+
+        /// <summary>
+        /// GET: api/Tickets/assignee/{username}
+        /// </summary>
+        /// <returns>Returns all tickets, sorted by updatedat dsc</returns>
         [HttpGet("assignee/{username}")]
         public IList<TicketViewModel> GetAssigneesTickets([FromRoute] string username)
         {
             var ticks = _context.Tickets
                 .Include(ticket => ticket.Assignee)
                 .Include(ticket => ticket.Requester)
+                .Include(ticket => ticket.Messages)
                 .Where(ticket => ticket.Assignee.UserName == username && ticket.Status != Ticket.STATUS_CLOSED)
                 .OrderByDescending(ticket => ticket.UpdatedAt);
 
@@ -147,16 +139,11 @@ namespace SupportWebDesk.Controllers
                     Email = ticket.Assignee.Email,
                     UserName = ticket.Assignee.UserName
                 };
-                var newRequester = new UserViewModel()
-                {
-                    Email = ticket.Requester.Email,
-                    UserName = ticket.Requester.UserName
-                };
                 var newTicket = new TicketViewModel()
                 {
                     Assignee = newAssignee,
                     Body = ticket.Body,
-                    Requester = newRequester,
+                    Requester = ticket.Requester,
                     Id = ticket.Id,
                     Subject = ticket.Subject,
                     CreatedAt = ticket.CreatedAt,

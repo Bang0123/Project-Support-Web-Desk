@@ -18,7 +18,7 @@ namespace SupportWebDesk.Controllers
     /// </summary>
     [Route("api/[controller]")]
     // Authorization policy for this API.
-    [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme, Policy = "Manage Accounts")]
+    [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme, Policy = Config.POLICY_ADMIN)]
     public class IdentityController : Controller
     {
         private readonly UserManager<User> _userManager;

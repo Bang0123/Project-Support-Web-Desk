@@ -28,7 +28,7 @@
       <h4>Beskrivelse</h4>
       <p>{{ ticket.body }}</p>
       <div>
-        <textarea class="form-control" rows="4"></textarea>
+        <textarea [ngModel]="body" class="form-control" rows="4"></textarea>
       </div>
     </div>
     <div class="col-sm-2">

@@ -11,9 +11,10 @@ using System;
 namespace SupportWebDesk.Migrations
 {
     [DbContext(typeof(WebDeskContext))]
-    partial class WebDeskContextModelSnapshot : ModelSnapshot
+    [Migration("20171128134724_fine_tuning_sender")]
+    partial class fine_tuning_sender
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -230,11 +231,11 @@ namespace SupportWebDesk.Migrations
 
                     b.Property<string>("MessageId");
 
-                    b.Property<bool>("Processed");
-
                     b.Property<string>("Sender");
 
                     b.Property<string>("Subject");
+
+                    b.Property<bool>("TicketCreated");
 
                     b.Property<DateTime>("UpdatedAt");
 
@@ -253,8 +254,6 @@ namespace SupportWebDesk.Migrations
                     b.Property<string>("Body");
 
                     b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("Sender");
 
                     b.Property<int?>("TicketId");
 

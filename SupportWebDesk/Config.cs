@@ -13,6 +13,10 @@ namespace SupportWebDesk
         public const string AUTHORITY = "http://localhost:5000/";
         public const string API_NAME = "WebAPI";
         public const string CLIENT_ID = "SupportWebDesk";
+        public const string POLICY_ADMIN = "Manage Accounts";
+        public const string POLICY_USER = "Access Resources";
+        public const string ROLE_ADMIN = "administrator";
+        public const string ROLE_USER = "user";
 
         private const string ROLES = "roles";
         private const string ROLE = "role";

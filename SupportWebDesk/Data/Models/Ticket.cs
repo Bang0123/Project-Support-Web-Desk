@@ -32,7 +32,7 @@ namespace SupportWebDesk.Data.Models
         public String Body { get; set; }
         public String Status { get; set; }
         public String Priority { get; set; }
-        public User Requester { get; set; }
+        public string Requester { get; set; }
         public User Assignee { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime CreatedAt { get; set; }

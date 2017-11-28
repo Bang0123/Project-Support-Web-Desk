@@ -11,9 +11,10 @@ using System;
 namespace SupportWebDesk.Migrations
 {
     [DbContext(typeof(WebDeskContext))]
-    partial class WebDeskContextModelSnapshot : ModelSnapshot
+    [Migration("20171128143139_readded_sender_msg")]
+    partial class readded_sender_msg
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

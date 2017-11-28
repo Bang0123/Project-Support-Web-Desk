@@ -14,7 +14,7 @@ namespace SupportWebDesk.Data.ViewModels
         public String Body { get; set; }
         public String Status { get; set; }
         public String Priority { get; set; }
-        public UserViewModel Requester { get; set; }
+        public string Requester { get; set; }
         public UserViewModel Assignee { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime CreatedAt { get; set; }

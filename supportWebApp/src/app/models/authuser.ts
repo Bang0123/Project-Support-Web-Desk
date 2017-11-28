@@ -6,6 +6,9 @@ export class Authuser {
 
   public email: string;
 
+  public firstName: string;
+  public lastName: string;
+
   /**
    * Identity resource added in Config.cs.
    */
