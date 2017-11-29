@@ -19,7 +19,17 @@ export class DataService {
       assignee: { userName: '', email: '' },
       createdAt: '',
       updatedAt: '',
-      body: ''
+      body: '',
+      messages: [
+        {
+          body: '',
+          updatedAt: new Date(),
+          createdAt: new Date(),
+          author: { userName: '', email: '' },
+          id: -1,
+          ticketId: -1
+        }
+      ]
     };
     this.ticketSource = new BehaviorSubject<Ticket>(tick);
     this.currentTicket = this.ticketSource.asObservable();

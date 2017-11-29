@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SupportWebDesk.Data;
@@ -22,7 +23,7 @@ namespace SupportWebDesk.Data.Jobs
         public void GetMailsAndSaveToDb(bool markAsRead = false)
         {
             var loginDetails = Config.Appsettings.GetSection("EmailLogin");
-            var mailDetails = Config.Appsettings.GetSection("MailOptions");
+            var mailDetails = Config.Appsettings.GetSection("MailImap");
             _mailRepo = InitMailRepo(
                 mailDetails["server"],
                 Convert.ToInt32(mailDetails["port"]),
@@ -37,8 +38,9 @@ namespace SupportWebDesk.Data.Jobs
                 var mail = new Mail
                 {
                     Subject = message.Subject,
-                    Body = message.HtmlBody ?? message.TextBody,
-                    Sender = message.Sender == null ? null : message.Sender.Name + "," + message.Sender.Address,
+                    Body = StripHTML(message.HtmlBody) ?? message.TextBody,
+                    Sender = message.From[0].Name == null ? null : message.From[0].Name,
+                    SenderEmail = message.From[0].ToString() == null ? null : StripEmail(message.From[0].ToString()),
                     MessageId = message.MessageId,
                     CreatedAt = message.Date == null ? DateTime.Now : message.Date.DateTime,
                     UpdatedAt = DateTime.Now,
@@ -54,5 +56,16 @@ namespace SupportWebDesk.Data.Jobs
         {
             return new MailRepository(mailServer, port, ssl, login, password);
         }
+        public static string StripHTML(string input)
+        {
+            return Regex.Replace(input, @"<.*?>", String.Empty);
+        }
+
+        public static string StripEmail(string input)
+        {
+            return Regex.Match(input, @"<.*?>").Value.Trim(new [] { '<', '>' });
+        }
     }
+
+
 }

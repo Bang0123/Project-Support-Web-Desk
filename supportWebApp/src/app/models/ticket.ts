@@ -5,7 +5,7 @@ export class Ticket {
   status: string;
   priority: string;
   subject: string;
-  requester: User;
+  requester: string;
   assignee: User;
   createdAt: string;
   updatedAt: string;

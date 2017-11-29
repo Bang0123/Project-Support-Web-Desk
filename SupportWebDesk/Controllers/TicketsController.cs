@@ -38,7 +38,6 @@ namespace SupportWebDesk.Controllers
         {
             var ticks = _context.Tickets
                 .Include(ticket => ticket.Assignee)
-                .Include(ticket => ticket.Requester)
                 .Include(ticket => ticket.Messages)
                 .OrderByDescending(x => x.UpdatedAt);
             var allTickets = new List<TicketViewModel>();
@@ -46,8 +45,8 @@ namespace SupportWebDesk.Controllers
             {
                 var newAssignee = new UserViewModel()
                 {
-                    Email = ticket.Assignee.Email,
-                    UserName = ticket.Assignee.UserName
+                    Email = ticket.Assignee?.Email,
+                    UserName = ticket.Assignee?.UserName
 
                 };
                 var newTicket = new TicketViewModel()
@@ -126,7 +125,6 @@ namespace SupportWebDesk.Controllers
         {
             var ticks = _context.Tickets
                 .Include(ticket => ticket.Assignee)
-                .Include(ticket => ticket.Requester)
                 .Include(ticket => ticket.Messages)
                 .Where(ticket => ticket.Assignee.UserName == username && ticket.Status != Ticket.STATUS_CLOSED)
                 .OrderByDescending(ticket => ticket.UpdatedAt);
@@ -136,8 +134,8 @@ namespace SupportWebDesk.Controllers
             {
                 var newAssignee = new UserViewModel()
                 {
-                    Email = ticket.Assignee.Email,
-                    UserName = ticket.Assignee.UserName
+                    Email = ticket.Assignee?.Email,
+                    UserName = ticket.Assignee?.UserName
                 };
                 var newTicket = new TicketViewModel()
                 {

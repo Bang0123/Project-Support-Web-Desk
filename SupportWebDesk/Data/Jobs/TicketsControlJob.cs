@@ -4,15 +4,17 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SupportWebDesk.Data.Models;
+using SupportWebDesk.Helpers.Services;
 
 namespace SupportWebDesk.Data.Jobs
 {
     public class TicketsControlJob
     {
         private WebDeskContext ctx;
-
-        public TicketsControlJob(WebDeskContext dbContext)
+        private IEmailSender ems;
+        public TicketsControlJob(WebDeskContext dbContext, IEmailSender emailer)
         {
+            ems = emailer;
             ctx = dbContext;
         }
 
@@ -36,6 +38,7 @@ namespace SupportWebDesk.Data.Jobs
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
+                    CreateTicket(mail, ctx);
                 }
                 mail.Processed = true;
             }
@@ -53,10 +56,10 @@ namespace SupportWebDesk.Data.Jobs
                 CreatedAt = mail.CreatedAt,
                 UpdatedAt = mail.UpdatedAt,
                 Sender = mail.Sender,
-                TicketId = tickid
+                SenderEmail = mail.SenderEmail,
+                TicketId = ticket.Id
             };
             ticket.Messages.Add(msg);
-            ctx.SaveChanges();
         }
         private void CreateTicket(Mail mail, WebDeskContext ctx)
         {
@@ -64,6 +67,7 @@ namespace SupportWebDesk.Data.Jobs
             {
                 Body = mail.Body,
                 Requester = mail.Sender,
+                RequesterMail = mail.SenderEmail,
                 Assignee = null,
                 CreatedAt = mail.CreatedAt,
                 UpdatedAt = mail.UpdatedAt,
@@ -72,7 +76,7 @@ namespace SupportWebDesk.Data.Jobs
                 Priority = Ticket.PRIORITY_NORMAL
             };
             ctx.Tickets.Add(newTicket);
-            ctx.SaveChanges();
+            ems.AutoReply(newTicket.RequesterMail, newTicket.Requester, newTicket.Id, newTicket.Subject);
         }
     }
 }

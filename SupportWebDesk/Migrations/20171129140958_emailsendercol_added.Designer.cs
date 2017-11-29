@@ -11,9 +11,10 @@ using System;
 namespace SupportWebDesk.Migrations
 {
     [DbContext(typeof(WebDeskContext))]
-    partial class WebDeskContextModelSnapshot : ModelSnapshot
+    [Migration("20171129140958_emailsendercol_added")]
+    partial class emailsendercol_added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -261,8 +262,6 @@ namespace SupportWebDesk.Migrations
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<string>("Sender");
-
-                    b.Property<string>("SenderEmail");
 
                     b.Property<int?>("TicketId");
 

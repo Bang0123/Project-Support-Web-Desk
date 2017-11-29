@@ -115,7 +115,8 @@ namespace SupportWebDesk
             IHostingEnvironment env,
             ILoggerFactory loggerFactory,
             IServiceProvider serviceProvider,
-            WebDeskContext ctx)
+            WebDeskContext ctx,
+            IEmailSender emailer)
         {
             loggerFactory.AddConsole(Config.Appsettings.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -147,8 +148,8 @@ namespace SupportWebDesk
             app.UseHangfireServer();
             app.UseHangfireDashboard();
 
-            RecurringJob.AddOrUpdate(() => new EmailPullerJob(ctx).GetMailsAndSaveToDb(!env.IsDevelopment()), Cron.MinuteInterval(5));
-            RecurringJob.AddOrUpdate(() => new TicketsControlJob(ctx).invoke(), Cron.MinuteInterval(5));
+            RecurringJob.AddOrUpdate(() => new EmailPullerJob(ctx).GetMailsAndSaveToDb(true), Cron.MinuteInterval(5));
+            RecurringJob.AddOrUpdate(() => new TicketsControlJob(ctx, emailer).invoke(), Cron.MinuteInterval(5));
 
             //// Enable middleware to serve generated Swagger as a JSON endpoint.
             //app.UseSwagger();

@@ -4,6 +4,6 @@ namespace SupportWebDesk.Helpers.Services
 {
     public interface IEmailSender
     {
-        Task SendEmailAsync(string email, string subject, string message);
+        Task AutoReply(string email, string requester, int ticketId, string subject);
     }
 }

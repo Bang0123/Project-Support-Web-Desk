@@ -25,6 +25,7 @@ namespace SupportWebDesk.Data
             modelBuilder.Entity<Ticket>().ToTable("Tickets");
             modelBuilder.Entity<Note>().ToTable("Notes");
             modelBuilder.Entity<Message>().ToTable("Messages");
+            modelBuilder.Entity<Mail>().HasIndex(mail => mail.MessageId).IsUnique();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
