@@ -45,8 +45,8 @@ import { HttpClientModule } from '@angular/common/http';
     MatModuleModule,
     RouterModule.forRoot([
       { path: '', redirectTo: 'login', pathMatch: 'full', canActivate: [AuthGuard] },
-      { path: 'login', component: LoginPageComponent},
-      { path: 'home', component: HomeComponent , canActivate: [AuthGuard] },
+      { path: 'login', component: LoginPageComponent },
+      { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
       { path: 'tickets', component: TicketViewComponent, canActivate: [AuthGuard] },
       { path: 'ticket', component: SingleTicketViewComponent, canActivate: [AuthGuard] },
       { path: '**', redirectTo: 'login' }
@@ -70,7 +70,7 @@ import { HttpClientModule } from '@angular/common/http';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
 
 export function getBaseUrl() {
   return 'http://localhost:5000';

@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
           const url: string = state.url;
 
           if (this.signedIn) {
-            if (url !== '/home') {
+            if (url !== '/login') {
               return true;
             } else {
               if (this.authenticationService.isInRole('administrator')) {

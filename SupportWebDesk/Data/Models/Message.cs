@@ -11,7 +11,7 @@ namespace SupportWebDesk.Data.Models
         public String Body { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime CreatedAt { get; set; }
-        public User Author { get; set; }
+        public string Author { get; set; }
         public string Sender { get; set; }
         public string SenderEmail { get; set; }
         public int Id { get; set; }

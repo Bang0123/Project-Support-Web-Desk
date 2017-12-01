@@ -94,7 +94,6 @@ export class AuthenticationService {
     const user: Authuser = new Authuser();
     if (this.oAuthService.hasValidAccessToken()) {
       const userInfo: any = this.oAuthService.getIdentityClaims();
-
       user.email = userInfo.email;
       user.userName = userInfo.name;
       user.roles = userInfo.role;

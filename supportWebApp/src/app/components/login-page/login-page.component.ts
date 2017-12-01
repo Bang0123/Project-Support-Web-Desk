@@ -12,15 +12,12 @@ import { Observable } from 'rxjs/Observable';
   styleUrls: ['./login-page.component.css']
 })
 export class LoginPageComponent extends Signin {
-  userName = 'admin@gmail.com';
-  password = 'Admin01*';
+
   working: boolean;
   constructor(protected router: Router,
     protected oAuthService: OAuthService,
     protected authenticationService: AuthenticationService) {
     super(router, oAuthService, authenticationService);
-    this.model.username = this.userName;
-    this.model.password = this.password;
     this.isLoading().subscribe(next => {
       next = false;
     });

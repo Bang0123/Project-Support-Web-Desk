@@ -57,14 +57,14 @@ export class TicketService {
       });
   }
 
-  postMessage(message: Message) {
+  postMessage(msg: Message) {
     const apiUrl = '/api/messages';
-    const msg = message;
+    const message = msg;
     const usr = this.authenticationService.getUser();
-    msg.author = new User();
-    msg.author.email = usr.email;
-    msg.author.userName = usr.userName;
-    return this.http.post(this.baseUrl + apiUrl, { msg }, {
+    message.author = usr.userName;
+    message.sender = usr.userName;
+    message.senderEmail = '';
+    return this.http.post(this.baseUrl + apiUrl, message, {
       headers: this.authenticationService.getAuthorizationHeader()
     });
   }

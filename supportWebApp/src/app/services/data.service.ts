@@ -15,7 +15,7 @@ export class DataService {
       status: '',
       priority: '',
       subject: '',
-      requester: { userName: '', email: '' },
+      requester: '',
       assignee: { userName: '', email: '' },
       createdAt: '',
       updatedAt: '',
@@ -25,7 +25,9 @@ export class DataService {
           body: '',
           updatedAt: new Date(),
           createdAt: new Date(),
-          author: { userName: '', email: '' },
+          author: '',
+          sender: '',
+          senderEmail: '',
           id: -1,
           ticketId: -1
         }

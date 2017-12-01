@@ -58,6 +58,17 @@ namespace SupportWebDesk
             //    var xmlPath = Path.Combine(basePath, "SupportWebDesk.xml");
             //    c.IncludeXmlComments(xmlPath);
             //});
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPol", builder =>
+                {
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                    builder.AllowCredentials();
+                    builder.Build();
+                });
+            });
 
             // begin identity
             services.AddIdentity<User, Role>()
@@ -128,9 +139,11 @@ namespace SupportWebDesk
                 app.UseDeveloperExceptionPage();
                 app.UseCors(builder =>
                 {
-                    builder.AllowAnyOrigin();
                     builder.AllowAnyHeader();
                     builder.AllowAnyMethod();
+                    builder.AllowAnyOrigin();
+                    builder.AllowCredentials();
+                    builder.Build();
                 });
             }
             else

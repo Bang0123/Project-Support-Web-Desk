@@ -38,7 +38,6 @@ namespace SupportWebDesk.Controllers
         {
             var ticks = _context.Tickets
                 .Include(ticket => ticket.Assignee)
-                .Include(ticket => ticket.Messages)
                 .OrderByDescending(x => x.UpdatedAt);
             var allTickets = new List<TicketViewModel>();
             foreach (var ticket in ticks)

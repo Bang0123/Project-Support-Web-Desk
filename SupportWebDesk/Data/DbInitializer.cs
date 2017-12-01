@@ -135,7 +135,8 @@ namespace SupportWebDesk.Data
                 NormalizedEmail = "ADMIN@GMAIL.COM",
                 NormalizedUserName = "ADMIN@GMAIL.COM",
                 TwoFactorEnabled = false,
-                UserName = "admin@gmail.com"
+                UserName = "admin@gmail.com",
+                EmailSignature = "Sendt fra Admin SupportWebDesk"
             };
 
             var result = await _userManager.CreateAsync(user, "Admin01*");
@@ -148,6 +149,7 @@ namespace SupportWebDesk.Data
                 // Assigns claims.
                 var claims = new List<Claim> {
                     new Claim(type: JwtClaimTypes.GivenName, value: user.FirstName),
+                    new Claim(type: JwtClaimTypes.Email, value: user.Email),
                     new Claim(type: JwtClaimTypes.FamilyName, value: user.LastName),
                 };
                 await _userManager.AddClaimsAsync(adminUser, claims);
@@ -164,7 +166,8 @@ namespace SupportWebDesk.Data
                 NormalizedEmail = "BRUGER@GMAIL.COM",
                 NormalizedUserName = "BRUGER@GMAIL.COM",
                 TwoFactorEnabled = false,
-                UserName = "Bruger@gmail.com"
+                UserName = "Bruger@gmail.com",
+                EmailSignature = "Sendt fra bruger SupportWebDesk"
             };
 
             var resulte = await _userManager.CreateAsync(bruger, "Bruger01*");
@@ -178,6 +181,7 @@ namespace SupportWebDesk.Data
                 var claims = new List<Claim> {
                     new Claim(type: JwtClaimTypes.GivenName, value: bruger.FirstName),
                     new Claim(type: JwtClaimTypes.FamilyName, value: bruger.LastName),
+                    new Claim(type: JwtClaimTypes.Email, value: bruger.Email),
                 };
                 await _userManager.AddClaimsAsync(brugerUser, claims);
             }

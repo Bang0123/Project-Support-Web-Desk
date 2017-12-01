@@ -1,10 +1,10 @@
-import { User } from './user';
-
 export class Message {
-  public body: String;
+  public body: string;
   public updatedAt: Date;
   public createdAt: Date;
-  public author: User;
+  public author: string;
   public id: number;
   public ticketId: number;
+  public sender: string;
+  public senderEmail: string;
 }

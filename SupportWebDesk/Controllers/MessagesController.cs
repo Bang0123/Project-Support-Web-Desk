@@ -4,11 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
+using SupportWebDesk.Auth;
 using SupportWebDesk.Data;
 using SupportWebDesk.Data.Models;
+using SupportWebDesk.Helpers.Services;
 
 namespace SupportWebDesk.Controllers
 {
@@ -19,10 +24,17 @@ namespace SupportWebDesk.Controllers
     public class MessagesController : Controller
     {
         private readonly WebDeskContext _context;
+        private readonly IEmailSender _emailer;
+        private readonly UserManager<User> _userManager;
 
-        public MessagesController(WebDeskContext context)
+        public MessagesController(
+            WebDeskContext context,
+            IEmailSender email,
+        UserManager<User> userManager)
         {
+            _userManager = userManager;
             _context = context;
+            _emailer = email;
         }
 
         // GET: api/Messages
@@ -94,11 +106,32 @@ namespace SupportWebDesk.Controllers
             {
                 return BadRequest(ModelState);
             }
-
             _context.Messages.Add(message);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetMessage", new { id = message.Id }, message);
+            var ticket = await _context.Tickets.FindAsync(message.TicketId);
+            ticket.Assignee = await _userManager.FindByNameAsync(message.Author);
+            await _context.SaveChangesAsync();
+            var mime = new MimeMessage();
+            mime.From.Add(new MailboxAddress($"Support Web Desk: {ticket.Assignee.FirstName}", ticket.Assignee.Email));
+            mime.To.Add(new MailboxAddress(ticket.Requester, ticket.RequesterMail));
+            var builder = new BodyBuilder();
+            var txtbody = _emailer.AttachSignature(_emailer.Formatbody(message.Body), ticket.Assignee.EmailSignature);
+            builder.TextBody = txtbody;
+            builder.HtmlBody = txtbody;
+            mime.Body = builder.ToMessageBody();
+            mime.Subject = _emailer.GetFormattedSubject(ticket.Id, message.Id, ticket.Subject);
+            if (await _emailer.SendEmailAsync(mime))
+            {
+                return CreatedAtAction("GetMessage", new { id = message.Id }, message);
+            }
+            else
+            {
+                ticket.Assignee = null;
+                _context.Messages.Remove(message);
+                await _context.SaveChangesAsync();
+                return BadRequest();
+            }
         }
 
         // DELETE: api/Messages/5

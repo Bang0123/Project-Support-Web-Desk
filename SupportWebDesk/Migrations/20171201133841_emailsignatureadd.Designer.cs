@@ -11,9 +11,10 @@ using System;
 namespace SupportWebDesk.Migrations
 {
     [DbContext(typeof(WebDeskContext))]
-    partial class WebDeskContextModelSnapshot : ModelSnapshot
+    [Migration("20171201133841_emailsignatureadd")]
+    partial class emailsignatureadd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,7 +257,7 @@ namespace SupportWebDesk.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Author");
+                    b.Property<string>("AuthorId");
 
                     b.Property<string>("Body");
 
@@ -271,6 +272,8 @@ namespace SupportWebDesk.Migrations
                     b.Property<DateTime>("UpdatedAt");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("TicketId");
 
@@ -398,6 +401,10 @@ namespace SupportWebDesk.Migrations
 
             modelBuilder.Entity("SupportWebDesk.Data.Models.Message", b =>
                 {
+                    b.HasOne("SupportWebDesk.Auth.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId");
+
                     b.HasOne("SupportWebDesk.Data.Models.Ticket", "Ticket")
                         .WithMany("Messages")
                         .HasForeignKey("TicketId");
