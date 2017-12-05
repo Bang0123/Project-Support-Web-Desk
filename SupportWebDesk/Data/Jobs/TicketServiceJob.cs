@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CSharp;
 using SupportWebDesk.Data.Models;
 using SupportWebDesk.Helpers.Services;
 
@@ -49,19 +50,25 @@ namespace SupportWebDesk.Data.Jobs
         {
             var tickid = Convert.ToInt32(Regex.Match(match.Value, @"\d+").Value.Trim());
             var ticket = await ctx.Tickets.FindAsync(tickid);
-            var msg = new Message()
+            if (ticket != null)
             {
-                Author = null,
-                Body = mail.Body,
-                CreatedAt = mail.CreatedAt,
-                UpdatedAt = mail.UpdatedAt,
-                Sender = mail.Sender,
-                SenderEmail = mail.SenderEmail,
-                TicketId = ticket?.Id
-            };
-            await _ctx.Messages.AddAsync(msg);
-            await _ctx.SaveChangesAsync();
-
+                var msg = new Message()
+                {
+                    Author = null,
+                    Body = mail.Body,
+                    CreatedAt = mail.CreatedAt,
+                    UpdatedAt = mail.UpdatedAt,
+                    Sender = mail.Sender,
+                    SenderEmail = mail.SenderEmail,
+                    TicketId = ticket?.Id
+                };
+                await _ctx.Messages.AddAsync(msg);
+                await _ctx.SaveChangesAsync();
+            }
+            else
+            {
+                await CreateTicket(mail, ctx);
+            }
         }
         private async Task CreateTicket(Mail mail, WebDeskContext ctx)
         {
