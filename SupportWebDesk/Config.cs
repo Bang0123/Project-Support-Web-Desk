@@ -10,6 +10,7 @@ namespace SupportWebDesk
 {
     public class Config
     {
+        public const string DB_CONTEXT = "SupportWebDeskContext";
         public const string AUTHORITY = "http://localhost:5000/";
         public const string API_NAME = "WebAPI";
         public const string CLIENT_ID = "SupportWebDesk";

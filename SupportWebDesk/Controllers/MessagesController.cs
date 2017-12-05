@@ -130,7 +130,7 @@ namespace SupportWebDesk.Controllers
                 ticket.Assignee = null;
                 _context.Messages.Remove(message);
                 await _context.SaveChangesAsync();
-                return BadRequest();
+                return BadRequest(new { Error = "Couldnt send Email" });
             }
         }
 

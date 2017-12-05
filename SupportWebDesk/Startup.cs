@@ -17,7 +17,6 @@ using SupportWebDesk.Auth;
 using SupportWebDesk.Data.Jobs;
 using SupportWebDesk.Helpers;
 using SupportWebDesk.Helpers.Services;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace SupportWebDesk
 {
@@ -41,23 +40,14 @@ namespace SupportWebDesk
         {
             // mvs hangfire and dbcontext
             services.AddMvc();
-            services.AddHangfire(x => x.UseSqlServerStorage(Config.Appsettings.GetConnectionString("SupportWebDeskContext")));
+            services.AddHangfire(x => x.UseSqlServerStorage(Config.Appsettings.GetConnectionString(Config.DB_CONTEXT)));
             services.AddDbContext<WebDeskContext>(options =>
-                options.UseSqlServer(Config.Appsettings.GetConnectionString("SupportWebDeskContext")));
+                options.UseSqlServer(Config.Appsettings.GetConnectionString(Config.DB_CONTEXT)));
             // Transient services
-            services.AddTransient<EmailPullerJob>();
+            services.AddTransient<EmailServiceJob>();
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IDbInitializer, DbInitializer>();
 
-            //// Register the Swagger generator, defining one or more Swagger documents
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.SwaggerDoc("v1", new Info { Title = "API", Version = "v1" });
-            //    // Set the comments path for the Swagger JSON and UI.
-            //    var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-            //    var xmlPath = Path.Combine(basePath, "SupportWebDesk.xml");
-            //    c.IncludeXmlComments(xmlPath);
-            //});
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPol", builder =>
@@ -131,7 +121,6 @@ namespace SupportWebDesk
         {
             loggerFactory.AddConsole(Config.Appsettings.GetSection("Logging"));
             loggerFactory.AddDebug();
-
             ctx.Database.EnsureCreated();
 
             if (env.IsDevelopment())
@@ -155,23 +144,21 @@ namespace SupportWebDesk
             app.UseDefaultFiles();
             app.UseStaticFiles();
             GlobalConfiguration.Configuration
-                .UseActivator(new HangfireActivator(serviceProvider));
+                .UseActivator(activator: new HangfireActivator(serviceProvider));
 
             app.UseIdentityServer();
+
             app.UseHangfireServer();
             app.UseHangfireDashboard();
 
-            RecurringJob.AddOrUpdate(() => new EmailPullerJob(ctx).GetMailsAndSaveToDb(true), Cron.MinuteInterval(5));
-            RecurringJob.AddOrUpdate(() => new TicketsControlJob(ctx, emailer).invoke(), Cron.MinuteInterval(5));
-
-            //// Enable middleware to serve generated Swagger as a JSON endpoint.
-            //app.UseSwagger();
-
-            //// Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
-            //app.UseSwaggerUI(c =>
-            //{
-            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
-            //});
+            RecurringJob.AddOrUpdate(
+                    methodCall: () => new EmailServiceJob(ctx).Invoke(true), 
+                    cronExpression: Cron.MinuteInterval(5)
+                );
+            RecurringJob.AddOrUpdate(
+                    methodCall: () => new TicketServiceJob(ctx, emailer).Invoke(), 
+                    cronExpression: Cron.MinuteInterval(5)
+                );
 
             app.UseMvc(routes =>
             {

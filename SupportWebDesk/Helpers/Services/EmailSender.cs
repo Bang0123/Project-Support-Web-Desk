@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using MimeKit;
 using MimeKit.Utils;
 using SupportWebDesk.Data;
@@ -14,55 +15,64 @@ namespace SupportWebDesk.Helpers.Services
 {
     public class EmailSender : IEmailSender
     {
-        private readonly IConfigurationSection mailLogin;
-        private readonly IConfigurationSection mailServer;
-        private readonly WebDeskContext ctx;
-        public EmailSender(WebDeskContext context)
+        private readonly IConfigurationSection _mailLogin;
+        private readonly IConfigurationSection _mailServer;
+        private readonly WebDeskContext _ctx;
+        private readonly ILogger _logger;
+        public EmailSender(WebDeskContext context, ILoggerFactory logger)
         {
-            ctx = context;
-            mailLogin = Config.Appsettings.GetSection("EmailLogin");
-            mailServer = Config.Appsettings.GetSection("MailSmtp");
+            _ctx = context;
+            _logger = logger.CreateLogger(typeof(EmailSender));
+            _mailLogin = Config.Appsettings.GetSection("EmailLogin");
+            _mailServer = Config.Appsettings.GetSection("MailSmtp");
         }
 
         public async Task AutoReply(string email, string requester, int ticketId, string subject)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Support Web Desk", mailLogin["username"]));
+            message.From.Add(new MailboxAddress("Support Web Desk", _mailLogin["username"]));
             message.To.Add(new MailboxAddress(requester, email));
             var builder = new BodyBuilder();
             var txtbody = GetAutoReplyBody(requester, false);
             builder.TextBody = txtbody;
             builder.HtmlBody = GetAutoReplyBody(requester, true);
             message.Body = builder.ToMessageBody();
-            var ticket = await ctx.Tickets.FindAsync(ticketId);
-            ticket.Messages.Add(new Message()
+            var ticket = await _ctx.Tickets.FindAsync(ticketId);
+            var msg = new Message()
             {
                 Author = null,
                 Body = txtbody,
                 CreatedAt = DateTime.Now,
                 Sender = "System",
-                SenderEmail = mailLogin["username"],
+                SenderEmail = _mailLogin["username"],
                 UpdatedAt = DateTime.Now,
                 TicketId = ticket.Id
-            });
-            var msgId = ticket.Messages.First().Id;
-            message.Subject = GetFormattedSubject(ticket.Id, msgId, ticket.Subject);
+            };
+            _ctx.Messages.Add(msg);
+            await _ctx.SaveChangesAsync();
+            message.Subject = GetFormattedSubject(ticket.Id, msg.Id, ticket.Subject);
             if (await SendEmailAsync(message))
             {
-                await ctx.SaveChangesAsync();
+                await _ctx.SaveChangesAsync();
+            }
+            else
+            {
+                _logger.LogCritical(401, "Cant send email through current smtp");
+                _ctx.Messages.Remove(msg);
+                await _ctx.SaveChangesAsync();
             }
         }
 
         public string AttachSignature(string body, string signature)
         {
-            return $"{body}\n\n{signature}";
+            return $"{body}\r\n\r\n{signature}";
         }
 
         public string Formatbody(string body)
         {
             try
             {
-                return body.Replace("\n", "\n\n");
+                return body.Replace("\r\n", "\r\n\r\n");
             }
             catch (Exception)
             {
@@ -104,9 +114,9 @@ Support Web Desk";
             {
                 using (var emailClient = new SmtpClient())
                 {
-                    await emailClient.ConnectAsync(mailServer["server"], Convert.ToInt32(mailServer["port"]), SecureSocketOptions.StartTls);
+                    await emailClient.ConnectAsync(_mailServer["server"], Convert.ToInt32(_mailServer["port"]), SecureSocketOptions.StartTls);
                     emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
-                    await emailClient.AuthenticateAsync(mailLogin["username"], mailLogin["password"]);
+                    await emailClient.AuthenticateAsync(_mailLogin["username"], _mailLogin["password"]);
                     await emailClient.SendAsync(message);
                     await emailClient.DisconnectAsync(true);
                     return true;

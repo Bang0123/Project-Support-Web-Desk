@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MimeKit;
 
 namespace SupportWebDesk.Helpers
 {
     public interface IMailRepository
     {
-        IEnumerable<MimeMessage> GetAllMails(bool markAsRead = false);
-        IEnumerable<MimeMessage> GetUnreadMails(bool markAsRead = false);
+        Task<IEnumerable<MimeMessage>> GetAllMailsAsync(bool markAsRead = false);
+        Task<IEnumerable<MimeMessage>> GetUnreadMailsAsync(bool markAsRead = false);
     }
 }

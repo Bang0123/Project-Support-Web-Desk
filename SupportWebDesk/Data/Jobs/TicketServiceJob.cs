@@ -8,47 +8,47 @@ using SupportWebDesk.Helpers.Services;
 
 namespace SupportWebDesk.Data.Jobs
 {
-    public class TicketsControlJob
+    public class TicketServiceJob
     {
-        private WebDeskContext ctx;
-        private IEmailSender ems;
-        public TicketsControlJob(WebDeskContext dbContext, IEmailSender emailer)
+        private readonly WebDeskContext _ctx;
+        private readonly IEmailSender _ems;
+        public TicketServiceJob(WebDeskContext dbContext, IEmailSender emailer)
         {
-            ems = emailer;
-            ctx = dbContext;
+            _ems = emailer;
+            _ctx = dbContext;
         }
 
-        public void invoke()
+        public async void Invoke()
         {
-            var mailsWithNoTickets = ctx.Mails.Where(mail => !mail.Processed);
-            foreach (var mail in mailsWithNoTickets)
+            var unProcessedMails = _ctx.Mails.Where(mail => !mail.Processed);
+            foreach (var mail in unProcessedMails)
             {
                 try
                 {
-                    var match = Regex.Match(mail.Subject, @"T: \d+ M: \d+");
+                    var match = Regex.Match(mail.Subject, @"T: \d+ M: \d+ \|");
                     if (match.Success)
                     {
-                        CreateMessage(mail, match, ctx);
+                        await CreateMessage(mail, match, _ctx);
                     }
                     else
                     {
-                        CreateTicket(mail, ctx);
+                        await CreateTicket(mail, _ctx);
                     }
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
-                    CreateTicket(mail, ctx);
+                    await CreateTicket(mail, _ctx);
                 }
                 mail.Processed = true;
             }
-            ctx.SaveChanges();
+            await _ctx.SaveChangesAsync();
         }
 
-        private void CreateMessage(Mail mail, Match match, WebDeskContext ctx)
+        private async Task CreateMessage(Mail mail, Match match, WebDeskContext ctx)
         {
-            var tickid = Convert.ToInt32(Regex.Match(match.Value, @"\d+").Value);
-            var ticket = ctx.Tickets.Find(tickid);
+            var tickid = Convert.ToInt32(Regex.Match(match.Value, @"\d+").Value.Trim());
+            var ticket = await ctx.Tickets.FindAsync(tickid);
             var msg = new Message()
             {
                 Author = null,
@@ -57,11 +57,13 @@ namespace SupportWebDesk.Data.Jobs
                 UpdatedAt = mail.UpdatedAt,
                 Sender = mail.Sender,
                 SenderEmail = mail.SenderEmail,
-                TicketId = ticket.Id
+                TicketId = ticket?.Id
             };
-            ticket.Messages.Add(msg);
+            await _ctx.Messages.AddAsync(msg);
+            await _ctx.SaveChangesAsync();
+
         }
-        private void CreateTicket(Mail mail, WebDeskContext ctx)
+        private async Task CreateTicket(Mail mail, WebDeskContext ctx)
         {
             var newTicket = new Ticket()
             {
@@ -75,8 +77,9 @@ namespace SupportWebDesk.Data.Jobs
                 Status = Ticket.STATUS_OPEN,
                 Priority = Ticket.PRIORITY_NORMAL
             };
-            ctx.Tickets.Add(newTicket);
-            ems.AutoReply(newTicket.RequesterMail, newTicket.Requester, newTicket.Id, newTicket.Subject);
+            await ctx.Tickets.AddAsync(newTicket);
+            await _ctx.SaveChangesAsync();
+            await _ems.AutoReply(newTicket.RequesterMail, newTicket.Requester, newTicket.Id, newTicket.Subject);
         }
     }
 }

@@ -10,17 +10,17 @@ using SupportWebDesk.Helpers;
 
 namespace SupportWebDesk.Data.Jobs
 {
-    public class EmailPullerJob
+    public class EmailServiceJob
     {
         private IMailRepository _mailRepo;
 
         private WebDeskContext _db;
 
-        public EmailPullerJob(WebDeskContext dbContext)
+        public EmailServiceJob(WebDeskContext dbContext)
         {
             _db = dbContext;
         }
-        public void GetMailsAndSaveToDb(bool markAsRead = false)
+        public async void Invoke(bool markAsRead = false)
         {
             var loginDetails = Config.Appsettings.GetSection("EmailLogin");
             var mailDetails = Config.Appsettings.GetSection("MailImap");
@@ -31,7 +31,7 @@ namespace SupportWebDesk.Data.Jobs
                 loginDetails["username"],
                 loginDetails["password"]
                 );
-            var mails = _mailRepo.GetUnreadMails(markAsRead: markAsRead);
+            var mails = await _mailRepo.GetUnreadMailsAsync(markAsRead: markAsRead);
             var newMails = new List<Mail>();
             foreach (var message in mails)
             {
@@ -48,8 +48,8 @@ namespace SupportWebDesk.Data.Jobs
                 };
                 newMails.Add(mail);
             }
-            _db.Mails.AddRange(newMails);
-            _db.SaveChanges();
+            await _db.Mails.AddRangeAsync(newMails);
+            await _db.SaveChangesAsync();
         }
 
         public IMailRepository InitMailRepo(string mailServer, int port, bool ssl, string login, string password)
