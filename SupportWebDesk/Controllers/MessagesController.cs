@@ -116,7 +116,10 @@ namespace SupportWebDesk.Controllers
             mime.From.Add(new MailboxAddress($"Support Web Desk: {ticket.Assignee.FirstName}", ticket.Assignee.Email));
             mime.To.Add(new MailboxAddress(ticket.Requester, ticket.RequesterMail));
             var builder = new BodyBuilder();
-            var txtbody = _emailer.AttachSignature(_emailer.Formatbody(message.Body), ticket.Assignee.EmailSignature);
+            var txtbody = _emailer.AttachSignature(
+                body: _emailer.Formatbody(body: message.Body),
+                signature: ticket.Assignee.EmailSignature
+                );
             builder.TextBody = txtbody;
             builder.HtmlBody = txtbody;
             mime.Body = builder.ToMessageBody();

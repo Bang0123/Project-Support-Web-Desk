@@ -1,7 +1,6 @@
 using System;
-using System.IO;
-using System.Text;
 using Hangfire;
+using Hangfire.Storage;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,8 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using SupportWebDesk.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.PlatformAbstractions;
-using Microsoft.IdentityModel.Tokens;
 using SupportWebDesk.Auth;
 using SupportWebDesk.Data.Jobs;
 using SupportWebDesk.Helpers;
@@ -45,7 +42,11 @@ namespace SupportWebDesk
                 options.UseSqlServer(Config.Appsettings.GetConnectionString(Config.DB_CONTEXT)));
             // Transient services
             services.AddTransient<EmailServiceJob>();
+            services.AddTransient<TicketServiceJob>();
+
+            // Email registered for dependency injection
             services.AddTransient<IEmailSender, EmailSender>();
+
             services.AddTransient<IDbInitializer, DbInitializer>();
 
             services.AddCors(options =>
@@ -152,11 +153,13 @@ namespace SupportWebDesk
             app.UseHangfireDashboard();
 
             RecurringJob.AddOrUpdate(
-                    methodCall: () => new EmailServiceJob(ctx).Invoke(true), 
+                    recurringJobId: "emailJob",
+                    methodCall: () => new EmailServiceJob(ctx).Invoke(true),
                     cronExpression: Cron.MinuteInterval(5)
                 );
             RecurringJob.AddOrUpdate(
-                    methodCall: () => new TicketServiceJob(ctx, emailer).Invoke(), 
+                    recurringJobId: "ticketJob",
+                    methodCall: () => new TicketServiceJob(ctx, emailer).Invoke(),
                     cronExpression: Cron.MinuteInterval(5)
                 );
 

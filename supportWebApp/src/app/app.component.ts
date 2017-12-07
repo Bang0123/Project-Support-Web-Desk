@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { NavmenuComponent } from './components/navmenu/navmenu.component';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Title } from '@angular/platform-browser';
@@ -11,6 +11,7 @@ import { AuthenticationService } from './services/authentication.service';
 })
 export class AppComponent implements OnInit {
   constructor(private oAuthService: OAuthService,
+    @Inject('BASE_URL') private baseUrl: string,
     private authenticationService: AuthenticationService,
     title: Title) {
     title.setTitle('Support Web Desk');
@@ -18,16 +19,16 @@ export class AppComponent implements OnInit {
     this.oAuthService.clientId = 'SupportWebDesk';
     this.oAuthService.scope = 'openid offline_access WebAPI profile roles';
     this.oAuthService.setStorage(this.authenticationService.storage);
-    // this.oAuthService.issuer = "http://angularspawebapi.azurewebsites.net";
-    this.oAuthService.issuer = 'http://localhost:5000';
+    this.oAuthService.issuer = this.baseUrl ;
     this.oAuthService.oidc = false;
     this.oAuthService.requireHttps = false;
 
-    // const url: string = 'http://angularspawebapi.azurewebsites.net/.well-known/openid-configuration';
-    const url = 'http://localhost:5000/.well-known/openid-configuration';
-
     // Loads Discovery Document.
-    this.oAuthService.loadDiscoveryDocument(url);
+    const url = this.baseUrl + '/.well-known/openid-configuration';
+    const me: AppComponent = this;
+    this.loadDiscovery(url).catch(() => {
+      me.loadDiscovery(url);
+    });
 
     if (this.oAuthService.hasValidAccessToken()) {
       this.authenticationService.init();
@@ -37,6 +38,10 @@ export class AppComponent implements OnInit {
     }
   }
 
+  loadDiscovery(url: string) {
+    return this.oAuthService.loadDiscoveryDocument(url);
+
+  }
   ngOnInit() {
   }
 }

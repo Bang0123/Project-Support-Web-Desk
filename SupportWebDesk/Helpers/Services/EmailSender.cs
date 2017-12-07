@@ -7,7 +7,6 @@ using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MimeKit;
-using MimeKit.Utils;
 using SupportWebDesk.Data;
 using SupportWebDesk.Data.Models;
 
@@ -30,35 +29,34 @@ namespace SupportWebDesk.Helpers.Services
         public async Task AutoReply(string email, string requester, int ticketId, string subject)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Support Web Desk", _mailLogin["username"]));
-            message.To.Add(new MailboxAddress(requester, email));
+            message.From.Add(address: new MailboxAddress(name: "Support Web Desk", address: _mailLogin[key: "username"]));
+            message.To.Add(address: new MailboxAddress(name: requester, address: email));
             var builder = new BodyBuilder();
-            var txtbody = GetAutoReplyBody(requester, false);
+            var txtbody = GetAutoReplyBody(requester: requester, html: false);
             builder.TextBody = txtbody;
-            builder.HtmlBody = GetAutoReplyBody(requester, true);
+            builder.HtmlBody = GetAutoReplyBody(requester: requester, html: true);
             message.Body = builder.ToMessageBody();
-            var ticket = await _ctx.Tickets.FindAsync(ticketId);
             var msg = new Message()
             {
                 Author = null,
                 Body = txtbody,
                 CreatedAt = DateTime.Now,
                 Sender = "System",
-                SenderEmail = _mailLogin["username"],
+                SenderEmail = _mailLogin[key: "username"],
                 UpdatedAt = DateTime.Now,
-                TicketId = ticket.Id
+                TicketId = ticketId
             };
-            _ctx.Messages.Add(msg);
+            await _ctx.Messages.AddAsync(entity: msg);
             await _ctx.SaveChangesAsync();
-            message.Subject = GetFormattedSubject(ticket.Id, msg.Id, ticket.Subject);
-            if (await SendEmailAsync(message))
+            message.Subject = GetFormattedSubject(ticketId: ticketId, msgId: msg.Id, subject: subject);
+            if (await SendEmailAsync(message: message))
             {
                 await _ctx.SaveChangesAsync();
             }
             else
             {
-                _logger.LogCritical(401, "Cant send email through current smtp");
-                _ctx.Messages.Remove(msg);
+                _logger.LogCritical(eventId: (int)LogEvent.Failure, message: "Cant send email through current smtp");
+                _ctx.Messages.Remove(entity: msg);
                 await _ctx.SaveChangesAsync();
             }
         }

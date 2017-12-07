@@ -20,7 +20,7 @@ namespace SupportWebDesk.Data.Jobs
         {
             _db = dbContext;
         }
-        public async void Invoke(bool markAsRead = false)
+        public async Task Invoke(bool markAsRead = false)
         {
             var loginDetails = Config.Appsettings.GetSection("EmailLogin");
             var mailDetails = Config.Appsettings.GetSection("MailImap");
@@ -48,7 +48,7 @@ namespace SupportWebDesk.Data.Jobs
                 };
                 newMails.Add(mail);
             }
-            await _db.Mails.AddRangeAsync(newMails);
+            _db.Mails.AddRange(newMails);
             await _db.SaveChangesAsync();
         }
 

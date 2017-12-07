@@ -19,14 +19,16 @@ namespace SupportWebDesk.Data.Jobs
             _ctx = dbContext;
         }
 
-        public async void Invoke()
+        public async Task Invoke()
         {
-            var unProcessedMails = _ctx.Mails.Where(mail => !mail.Processed);
+            var unProcessedMails = _ctx.Mails.Where(mail => !mail.Processed).ToList();
             foreach (var mail in unProcessedMails)
             {
                 try
                 {
-                    var match = Regex.Match(mail.Subject, @"T: \d+ M: \d+ \|");
+                    var match = Regex.Match(
+                        input: mail.Subject, 
+                        pattern: @"T: \d+ M: \d+ \|");
                     if (match.Success)
                     {
                         await CreateMessage(mail, match, _ctx);
@@ -62,7 +64,7 @@ namespace SupportWebDesk.Data.Jobs
                     SenderEmail = mail.SenderEmail,
                     TicketId = ticket?.Id
                 };
-                await _ctx.Messages.AddAsync(msg);
+                _ctx.Messages.Add(msg);
                 await _ctx.SaveChangesAsync();
             }
             else
@@ -84,7 +86,7 @@ namespace SupportWebDesk.Data.Jobs
                 Status = Ticket.STATUS_OPEN,
                 Priority = Ticket.PRIORITY_NORMAL
             };
-            await ctx.Tickets.AddAsync(newTicket);
+            ctx.Tickets.Add(newTicket);
             await _ctx.SaveChangesAsync();
             await _ems.AutoReply(newTicket.RequesterMail, newTicket.Requester, newTicket.Id, newTicket.Subject);
         }

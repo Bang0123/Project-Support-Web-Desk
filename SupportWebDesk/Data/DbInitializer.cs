@@ -62,7 +62,7 @@ namespace SupportWebDesk.Data
                 return; // Db has been seeded.
             }
             var mails = CreateMails(12);
-            await context.Mails.AddRangeAsync(mails);
+            context.Mails.AddRange(mails);
             await context.SaveChangesAsync();
         }
 
@@ -84,7 +84,7 @@ namespace SupportWebDesk.Data
                 return; // Db has been seeded.
             }
             var tickets = CreateTickets(12, context);
-            await context.Tickets.AddRangeAsync(tickets);
+            context.Tickets.AddRange(tickets);
             await context.SaveChangesAsync();
         }
 
@@ -120,8 +120,8 @@ namespace SupportWebDesk.Data
             }
 
             // Creates Roles.
-            await _roleManager.CreateAsync(new Role("administrator"));
-            await _roleManager.CreateAsync(new Role("user"));
+            await _roleManager.CreateAsync(new Role(Config.POLICY_ADMIN));
+            await _roleManager.CreateAsync(new Role(Config.ROLE_USER));
 
             // Seeds an admin user.
             var user = new User
@@ -145,7 +145,7 @@ namespace SupportWebDesk.Data
             {
                 var adminUser = await _userManager.FindByNameAsync(user.UserName);
                 // Assigns the administrator role.
-                await _userManager.AddToRoleAsync(adminUser, "administrator");
+                await _userManager.AddToRoleAsync(adminUser, Config.ROLE_ADMIN);
                 // Assigns claims.
                 var claims = new List<Claim> {
                     new Claim(type: JwtClaimTypes.GivenName, value: user.FirstName),
@@ -176,7 +176,7 @@ namespace SupportWebDesk.Data
             {
                 var brugerUser = await _userManager.FindByNameAsync(bruger.UserName);
                 // Assigns the administrator role.
-                await _userManager.AddToRoleAsync(brugerUser, "user");
+                await _userManager.AddToRoleAsync(brugerUser, Config.ROLE_USER);
                 // Assigns claims.
                 var claims = new List<Claim> {
                     new Claim(type: JwtClaimTypes.GivenName, value: bruger.FirstName),
