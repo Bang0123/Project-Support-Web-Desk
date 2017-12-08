@@ -110,8 +110,22 @@ namespace SupportWebDesk.Controllers
             await _context.SaveChangesAsync();
 
             var ticket = await _context.Tickets.FindAsync(message.TicketId);
-            ticket.Assignee = await _userManager.FindByNameAsync(message.Author);
-            await _context.SaveChangesAsync();
+            if (ticket.Assignee == null)
+            {
+                ticket.Assignee = await _userManager.FindByNameAsync(message.Author);
+                await _context.SaveChangesAsync();
+            }
+
+            if (message.IsNote)
+            {
+                return CreatedAtAction("GetMessage", new { id = message.Id }, message);
+            }
+            return await MailMessage(message, ticket);
+
+        }
+
+        private async Task<IActionResult> MailMessage(Message message, Ticket ticket)
+        {
             var mime = new MimeMessage();
             mime.From.Add(new MailboxAddress($"Support Web Desk: {ticket.Assignee.FirstName}", ticket.Assignee.Email));
             mime.To.Add(new MailboxAddress(ticket.Requester, ticket.RequesterMail));

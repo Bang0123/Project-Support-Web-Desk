@@ -7,4 +7,5 @@ export class Message {
   public ticketId: number;
   public sender: string;
   public senderEmail: string;
+  public isNote: boolean;
 }

@@ -38,6 +38,7 @@ namespace SupportWebDesk.Controllers
         {
             var ticks = _context.Tickets
                 .Include(ticket => ticket.Assignee)
+                // .Include(x=>x.Messages)
                 .OrderByDescending(x => x.UpdatedAt);
             var allTickets = new List<TicketViewModel>();
             foreach (var ticket in ticks)
@@ -60,8 +61,6 @@ namespace SupportWebDesk.Controllers
                     UpdatedAt = ticket.UpdatedAt,
                     Status = ticket.Status,
                     Messages = ticket.Messages,
-                    Notes = ticket.Notes
-
                 };
                 allTickets.Add(newTicket);
             }
@@ -148,13 +147,29 @@ namespace SupportWebDesk.Controllers
                     UpdatedAt = ticket.UpdatedAt,
                     Status = ticket.Status,
                     Messages = ticket.Messages,
-                    Notes = ticket.Notes
-
                 };
                 allTickets.Add(newTicket);
             }
             return allTickets;
         }
+
+        /// <summary>
+        /// GET: api/Tickets/messages/{id}
+        /// </summary>
+        /// <returns>Returns all ticket messages, sorted by updatedat dsc</returns>
+        [HttpGet("messages/{id}")]
+        public async Task<IActionResult> GetTicketMessages([FromRoute] int id)
+        {
+            var ticket = await _context.Tickets.FindAsync(id);
+
+            if (ticket == null)
+            {
+                return BadRequest(new { Error = "Ticket id doesnt exist" });
+            }
+            var messages = _context.Messages.Where(m => m.TicketId == id).OrderByDescending(msg => msg.UpdatedAt);
+            return Ok(messages);
+        }
+
 
         // GET: api/Tickets/5
         [HttpGet("{id}")]

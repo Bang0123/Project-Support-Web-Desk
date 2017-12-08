@@ -18,7 +18,6 @@ namespace SupportWebDesk.Data.ViewModels
         public UserViewModel Assignee { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime CreatedAt { get; set; }
-        public ICollection<Note> Notes { get; set; }
         public ICollection<Message> Messages { get; set; }
     }
 }

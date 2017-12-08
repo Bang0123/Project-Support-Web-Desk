@@ -68,4 +68,12 @@ export class TicketService {
       headers: this.authenticationService.getAuthorizationHeader()
     });
   }
+
+  getTicketMessages(ticketid: number) {
+    const apiUrl = '/api/Tickets/messages/';
+    return this.http.get(
+      this.baseUrl + apiUrl + ticketid, {
+        headers: this.authenticationService.getAuthorizationHeader()
+      });
+  }
 }

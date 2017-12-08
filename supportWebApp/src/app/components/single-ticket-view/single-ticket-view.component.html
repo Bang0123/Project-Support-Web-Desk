@@ -27,25 +27,32 @@
     <div class="text borders col-md-6">
       <h4>Beskrivelse</h4>
       <p>{{ ticket.body }}</p>
+      <div *ngIf="messages">
+        <div *ngFor="let message of messages">
+          <p>--------------------------</p>
+          <p>{{message.body}}</p>
+          <p>{{message.sender}}</p>
+          <br>
+          <p>{{message.updatedAt}}</p>
+          {{message.author}} {{message.senderEmail}}
+        </div>
+      </div>
       <div>
         <textarea [(ngModel)]="body" class="form-control" rows="4"></textarea>
       </div>
     </div>
     <div class="col-sm-2">
       <br>
-      <div class="radio">
-        <label>
-          <input type="radio" name="optionsRadios" id="optionsRadios1" value="intern" checked> Intern
-        </label>
-      </div>
-      <div class="radio">
-        <label>
-          <input type="radio" name="optionsRadios" id="optionsRadios2" value="extern"> Ekstern
-        </label>
-      </div>
+      <mat-radio-group class="example-radio-group" [(ngModel)]="isNote">
+        <mat-radio-button class="example-radio-button" [value]="true">
+          Intern
+        </mat-radio-button>
+        <mat-radio-button class="example-radio-button" [value]="false">
+          Ekstern
+        </mat-radio-button>
+      </mat-radio-group>
       <br>
       <button (click)="sendAnswer()" class="btn btn-default">Send svar</button>
-
     </div>
   </div>
 </div>

@@ -29,7 +29,8 @@ export class DataService {
           sender: '',
           senderEmail: '',
           id: -1,
-          ticketId: -1
+          ticketId: -1,
+          isNote: false
         }
       ]
     };

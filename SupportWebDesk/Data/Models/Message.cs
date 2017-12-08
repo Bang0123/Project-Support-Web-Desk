@@ -16,5 +16,6 @@ namespace SupportWebDesk.Data.Models
         public string SenderEmail { get; set; }
         public int Id { get; set; }
         public int? TicketId { get; set; }
+        public bool IsNote { get; set; }
     }
 }

@@ -37,7 +37,6 @@ namespace SupportWebDesk.Data.Models
         public User Assignee { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime CreatedAt { get; set; }
-        public virtual ICollection<Note> Notes { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
     }
 }
