@@ -25,23 +25,44 @@
         <br>{{ ticket.updatedAt | date:'HH:mm dd-MM-yyyy' }}</p>
     </div>
     <div class="text borders col-md-6">
-      <h4>Beskrivelse</h4>
+      <h3>Beskrivelse</h3>
       <p>{{ ticket.body }}</p>
+      <hr>
       <div *ngIf="messages">
+        <h3>Beskeder og Noter</h3>
         <div *ngFor="let message of messages">
-          <p>--------------------------</p>
-          <p>{{message.body}}</p>
-          <p>{{message.sender}}</p>
-          <br>
-          <p>{{message.updatedAt}}</p>
-          {{message.author}} {{message.senderEmail}}
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title *ngIf="message.isNote; then notetemp; else beskedtemp"></mat-card-title>
+                  <ng-template #notetemp>
+                      <mat-card-title>Note</mat-card-title>
+                  </ng-template>
+                  <ng-template #beskedtemp>
+                      <mat-card-title>Besked</mat-card-title>
+                  </ng-template>
+                  <mat-card-subtitle>{{message.updatedAt | date:'HH:mm dd-MM-yyyy'}}
+                    <br>
+                    {{message.sender}}
+                    <br>
+                    {{message.author}}
+                    <br>
+                    {{message.senderEmail}}
+                  </mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                    <p>{{message.body}}</p>
+                </mat-card-content>
+              </mat-card>
+              <hr>
         </div>
-      </div>
-      <div>
+      </div> 
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
         <textarea [(ngModel)]="body" class="form-control" rows="4"></textarea>
       </div>
-    </div>
-    <div class="col-sm-2">
+    <div class="col-md-2">
       <br>
       <mat-radio-group class="example-radio-group" [(ngModel)]="isNote">
         <mat-radio-button class="example-radio-button" [value]="true">
@@ -54,6 +75,7 @@
       <br>
       <button (click)="sendAnswer()" class="btn btn-default">Send svar</button>
     </div>
+  </div>
   </div>
 </div>
 <div *ngIf="ticket.id < 0">
