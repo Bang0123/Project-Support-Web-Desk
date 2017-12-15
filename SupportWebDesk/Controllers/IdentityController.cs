@@ -15,6 +15,7 @@ namespace SupportWebDesk.Controllers
 {
     /// <summary>
     /// Identity Web API controller.
+    /// Not used
     /// </summary>
     [Route("api/[controller]")]
     // Authorization policy for this API.

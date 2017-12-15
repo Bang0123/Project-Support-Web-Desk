@@ -24,7 +24,12 @@
         </li>
         <li [routerLinkActive]="['link-active']" *ngIf="signedIn | async">
           <a [routerLink]="['/ticket']">
-            <span class='glyphicon glyphicon-apple'></span> Ticket
+            <span class='glyphicon glyphicon-edit'></span> Ticket
+          </a>
+        </li>
+        <li [routerLinkActive]="['link-active']" *ngIf="signedIn | async">
+          <a [routerLink]="['/search']">
+            <span class='glyphicon glyphicon-search'></span> Søg
           </a>
         </li>
         <li [routerLinkActive]="['link-active']" *ngIf="(signedIn | async) === false">
@@ -34,7 +39,7 @@
         </li>
         <li [routerLinkActive]="['link-active']" *ngIf="signedIn | async">
           <a (click)="signout()">
-            <span class='glyphicon glyphicon-log-in'></span> Logout
+            <span class='glyphicon glyphicon-log-out'></span> Logout
           </a>
         </li>
       </ul>

@@ -156,7 +156,7 @@ namespace SupportWebDesk.Controllers
         /// <summary>
         /// GET: api/Tickets/messages/{id}
         /// </summary>
-        /// <returns>Returns all ticket messages, sorted by updatedat dsc</returns>
+        /// <returns>Returns all ticket messages for an id, sorted by updatedat dsc</returns>
         [HttpGet("messages/{id}")]
         public async Task<IActionResult> GetTicketMessages([FromRoute] int id)
         {

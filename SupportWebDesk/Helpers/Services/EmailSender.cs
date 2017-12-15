@@ -63,7 +63,10 @@ namespace SupportWebDesk.Helpers.Services
 
         public string AttachSignature(string body, string signature)
         {
-            return $"{body}\r\n\r\n{signature}";
+            return $@"{body}
+
+
+{signature}";
         }
 
         public string Formatbody(string body)

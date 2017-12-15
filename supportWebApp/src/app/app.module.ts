@@ -8,7 +8,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AlertModule } from 'ngx-bootstrap';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthenticationService } from './services/authentication.service';
-import { IdentityService } from './services/identity.service';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { AppComponent } from './app.component';
@@ -21,6 +20,7 @@ import { DataService } from './services/data.service';
 import { MatModuleModule } from './modules/mat-module/mat-module.module';
 import { LoginPageComponent } from './components/login-page/login-page.component';
 import { HttpClientModule } from '@angular/common/http';
+import { SearchViewComponent } from './components/search-view/search-view.component';
 // import { OAuthConfig } from './oauth.config';
 
 
@@ -31,7 +31,8 @@ import { HttpClientModule } from '@angular/common/http';
     HomeComponent,
     TicketViewComponent,
     SingleTicketViewComponent,
-    LoginPageComponent
+    LoginPageComponent,
+    SearchViewComponent
   ],
   imports: [
     BrowserModule,
@@ -49,6 +50,7 @@ import { HttpClientModule } from '@angular/common/http';
       { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
       { path: 'tickets', component: TicketViewComponent, canActivate: [AuthGuard] },
       { path: 'ticket', component: SingleTicketViewComponent, canActivate: [AuthGuard] },
+      { path: 'search', component: SearchViewComponent, canActivate: [AuthGuard] },
       { path: '**', redirectTo: 'login' }
     ])
   ],
@@ -58,7 +60,6 @@ import { HttpClientModule } from '@angular/common/http';
     DataService,
     AuthGuard,
     AuthenticationService,
-    IdentityService,
     OAuthService,
     // OAuthConfig,
     // {

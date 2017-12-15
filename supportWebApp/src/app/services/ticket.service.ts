@@ -70,7 +70,7 @@ export class TicketService {
   }
 
   getTicketMessages(ticketid: number) {
-    const apiUrl = '/api/Tickets/messages/';
+    const apiUrl =  '/api/Tickets/messages/';
     return this.http.get(
       this.baseUrl + apiUrl + ticketid, {
         headers: this.authenticationService.getAuthorizationHeader()
