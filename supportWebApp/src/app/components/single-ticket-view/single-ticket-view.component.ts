@@ -17,6 +17,8 @@ export class SingleTicketViewComponent implements OnInit, AfterViewInit {
   body: string;
   isNote: boolean;
   messages: Message[] = [];
+  statuses = ['Åben', 'Igang', 'Lukket'];
+  priorities = ['Kritisk', 'Høj', 'Normal', 'Lav'];
   constructor(
     private ticketService: TicketService,
     private route: ActivatedRoute,

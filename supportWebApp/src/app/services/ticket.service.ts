@@ -1,9 +1,9 @@
 import { Injectable, Inject } from '@angular/core';
-import { URLSearchParams } from '@angular/http';
 import { AuthenticationService } from './authentication.service';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Message } from '../models/message';
 import { User } from '../models/user';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class TicketService {
@@ -70,10 +70,19 @@ export class TicketService {
   }
 
   getTicketMessages(ticketid: number) {
-    const apiUrl =  '/api/Tickets/messages/';
+    const apiUrl = '/api/Tickets/messages/';
     return this.http.get(
       this.baseUrl + apiUrl + ticketid, {
         headers: this.authenticationService.getAuthorizationHeader()
+      });
+  }
+
+  searchTickets(searchParams: HttpParams) {
+    const apiUrl = '/api/Tickets/search';
+    return this.http.get(
+      this.baseUrl + apiUrl, {
+        headers: this.authenticationService.getAuthorizationHeader(),
+        params: searchParams
       });
   }
 }

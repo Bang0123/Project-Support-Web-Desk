@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -39,6 +39,7 @@ import { SearchViewComponent } from './components/search-view/search-view.compon
     CommonModule,
     HttpModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     AlertModule.forRoot(),
     OAuthModule.forRoot(),

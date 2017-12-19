@@ -1,0 +1,82 @@
+user story 4
+
+actor Bruger
+title User story 4
+Bruger->Angular frontend:Navigere til alle tickets view
+Angular frontend->backend:GetTickets
+database Database
+backend->Database:query all tickets
+backend<--Database:return tickets
+Angular frontend<--backend:return result
+
+Bruger->Angular frontend:Ændrer sortering
+Bruger<--Angular frontend:Sortering ændret
+Bruger->Angular frontend:Se en ticket
+Bruger<-Angular frontend:Navigere til den enkle ticket
+
+user story 1
+
+actor Bruger
+title User story 1
+Bruger->Angular frontend:initialisere login process
+Angular frontend->backend:Login using\nOauth framework
+
+backend->Identity framework:Framework handle\nOauth request
+backend<--Identity framework:return access token
+Angular frontend<--backend:return result
+
+Bruger<-Angular frontend:omdiriger til startside
+group Now Authorized with token
+Angular frontend->backend:GetAssignedTicekts
+database Database
+backend->Database:query assigned tickets
+backend<-Database:return tickets
+Angular frontend<-backend:return result
+end 
+
+user story 7
+
+actor Bruger
+title User story 7
+Bruger->Angular frontend:initialiserer send mail process
+Angular frontend->backend:POST new message
+
+backend->SMTP server:Send message\nas email
+backend<-SMTP server:Message sent
+database Database
+backend->Database:Save message
+backend<-Database:OK
+
+Angular frontend<--backend:return result
+
+Bruger<--Angular frontend:Vis ny besked på\npågældende ticket
+
+user story 2
+
+actor Bruger
+title User story 2
+Bruger->Angular frontend:Skriver intern note
+Angular frontend->backend:POST new message\n{ isNote = true }
+
+database Database
+backend->Database:Save message
+backend<-Database:OK
+
+Angular frontend<--backend:return result
+
+Bruger<--Angular frontend:Vis ny note på\npågældende ticket
+
+user story 6
+
+actor Bruger
+title User story 6
+Bruger->Angular frontend:Taster søge\nparametre
+Angular frontend->backend:GET TicketSearch
+
+database Database
+backend->Database:query db
+backend<-Database:return result
+
+Angular frontend<--backend:return result
+
+Bruger<--Angular frontend:Vis search resultat 

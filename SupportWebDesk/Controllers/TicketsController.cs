@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4.AccessTokenValidation;
+using LinqKit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SupportWebDesk.Auth;
 using SupportWebDesk.Data;
 using SupportWebDesk.Data.Models;
 using SupportWebDesk.Data.ViewModels;
+using SupportWebDesk.Helpers;
 
 namespace SupportWebDesk.Controllers
 {
@@ -21,10 +25,14 @@ namespace SupportWebDesk.Controllers
     public class TicketsController : Controller
     {
         private readonly WebDeskContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public TicketsController(WebDeskContext context)
+        public TicketsController(
+            WebDeskContext context,
+            UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -170,6 +178,86 @@ namespace SupportWebDesk.Controllers
             return Ok(messages);
         }
 
+        /// <summary>
+        /// GET: api/Tickets/search
+        /// </summary>
+        /// <returns>Returns all tickets, sorted by updatedat dsc</returns>
+        [HttpGet("search")]
+        public IList<TicketViewModel> GetSearchTickets(
+            [FromQuery] int? ticketid,
+            [FromQuery] string requester,
+            [FromQuery] string subject,
+            [FromQuery] string priority,
+            [FromQuery] string body,
+            [FromQuery] string assignee,
+            [FromQuery] DateTime datefrom,
+            [FromQuery] DateTime dateto)
+        {
+            var pred = PredicateBuilder.New<Ticket>();
+            if (ticketid != null)
+            {
+                pred = pred.Or(ticket => ticket.Id == ticketid);
+            }
+            if (requester != null)
+            {
+                pred = pred.Or(ticket => ticket.Requester.Contains(requester));
+            }
+            if (subject != null)
+            {
+                pred = pred.Or(ticket => ticket.Subject.Contains(subject));
+            }
+            if (priority != null)
+            {
+                pred = pred.Or(ticket => ticket.Priority == priority);
+            }
+            if (body != null)
+            {
+                pred = pred.Or(ticket => ticket.Body.Contains(body));
+            }
+            if (assignee != null)
+            {
+                pred = pred.Or(ticket => ticket.Assignee.UserName.Contains(assignee));
+            }
+            if (datefrom != default(DateTime) && dateto != default(DateTime))
+            {
+                var nested = PredicateBuilder.New<Ticket>();
+                nested = nested.Or(ticket => ticket.CreatedAt > datefrom);
+                nested = nested.And(ticket => ticket.CreatedAt < dateto);
+                nested = nested.Or(ticket => ticket.UpdatedAt > datefrom);
+                nested = nested.And(ticket => ticket.UpdatedAt < dateto);
+                pred = pred.Or(nested);
+            }
+            var ticks = _context.Tickets
+                .Include(ticket => ticket.Assignee)
+                .Where(pred)
+                .OrderByDescending(ticket => ticket.UpdatedAt)
+                .Distinct();
+
+            var allTickets = new List<TicketViewModel>();
+            foreach (var ticket in ticks)
+            {
+                var newAssignee = new UserViewModel()
+                {
+                    Email = ticket.Assignee?.Email,
+                    UserName = ticket.Assignee?.UserName
+                };
+                var newTicket = new TicketViewModel()
+                {
+                    Assignee = newAssignee,
+                    Body = ticket.Body,
+                    Requester = ticket.Requester,
+                    Id = ticket.Id,
+                    Subject = ticket.Subject,
+                    CreatedAt = ticket.CreatedAt,
+                    Priority = ticket.Priority,
+                    UpdatedAt = ticket.UpdatedAt,
+                    Status = ticket.Status,
+                    Messages = ticket.Messages,
+                };
+                allTickets.Add(newTicket);
+            }
+            return allTickets;
+        }
 
         // GET: api/Tickets/5
         [HttpGet("{id}")]

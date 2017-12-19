@@ -3,26 +3,57 @@
 <form>
   <div class="row">
     <div class="col-md-2">
-      <input class="form-control" placeholder="Ticket id">
-      <input class="form-control" placeholder="Anmoder">
+      <mat-form-field>
+      <input matInput [(ngModel)]="model.ticketid" placeholder="Ticket id" name="ticketid" />
+      </mat-form-field>
+      <mat-form-field>
+      <input matInput [(ngModel)]="model.requester" name="requester" placeholder="Anmoder" />
+    </mat-form-field> </div>
+    <div class="col-md-2">
+      <mat-form-field>
+      <input matInput [(ngModel)]="model.subject" name="subject" placeholder="Overskrift" />
+      </mat-form-field>
+      <mat-form-field>
+      <input matInput [(ngModel)]="model.body" name="body" placeholder="Fri text" />
+      </mat-form-field>
     </div>
     <div class="col-md-2">
-      <input class="form-control" placeholder="Overskrift">
-      <input class="form-control" placeholder="Fri text">
+      <mat-form-field>
+      <mat-select placeholder="Prioritet" [(ngModel)]="model.priority" name="priority">
+        <mat-option *ngFor="let priority of priorities" [value]="priority">
+          {{ priority }}
+        </mat-option>
+      </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+      <input matInput [(ngModel)]="model.assignee" name="assignee" placeholder="Ansvarshavende" />
+    </mat-form-field>
     </div>
     <div class="col-md-2">
-      <input class="form-control" placeholder="Prioritet">
-      <input class="form-control" placeholder="Ansvarshavende">
-    </div>
-    <div class="col-md-2">
-      <input class="form-control" placeholder="Dato fra">
-      <input class="form-control" placeholder="Dato til">
+      <mat-form-field>
+        <input matInput [matDatepicker]="picker1" [(ngModel)]="model.datefrom" name="datefrom" [formControl]="datefrom" placeholder="Dato fra" />
+        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput [matDatepicker]="picker2" [(ngModel)]="model.dateto" name="dateto" [formControl]="dateto" placeholder="Dato til" />
+        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
     </div>
     <div class="col-md-1">
       <button mat-raised-button (click)="search()" color="primary">Søg</button>
     </div>
   </div>
 </form>
+<div *ngIf="errorMessages.length > 0" class="alert alert-danger alert-dismissable has-error">
+  <div *ngFor="let errorMessage of errorMessages">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <p>Error:
+      <strong>{{ errorMessage.description }}</strong>
+    </p>
+  </div>
+</div>
 <p *ngIf="!dataSource.data">
   <em>Søg efter tickets</em>
 </p>
