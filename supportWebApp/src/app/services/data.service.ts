@@ -17,8 +17,8 @@ export class DataService {
       subject: '',
       requester: '',
       assignee: { userName: '', email: '' },
-      createdAt: '',
-      updatedAt: '',
+      createdAt: new Date(),
+      updatedAt: new Date(),
       body: '',
       messages: [
         {

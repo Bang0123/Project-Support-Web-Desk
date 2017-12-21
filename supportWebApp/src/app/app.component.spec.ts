@@ -44,6 +44,12 @@ describe('AppComponent', () => {
     expect(component.title.getTitle()).toBe('Support Web Desk');
   }));
 
+  it('main div should have container-fluid class', async(() => {
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('div').className).toBe('container-fluid');
+  }));
+
   it('should render app-navmenu', async(() => {
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;

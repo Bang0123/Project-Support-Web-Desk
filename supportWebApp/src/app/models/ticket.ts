@@ -7,8 +7,8 @@ export class Ticket {
   subject: string;
   requester: string;
   assignee: User;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   body: string;
   messages: Message[];
 }

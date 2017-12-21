@@ -1,16 +1,16 @@
 <h1>Startside</h1>
 <p><strong>Velkommen {{ user.firstName }}</strong></p>
 <div class="row">
-  <div class="col-sm-5">
+  <div class="col-sm-5" name="newticks">
     <h3 class="text-center">Nye Tickets</h3>
     <p class="lead text-center">{{ newTickets }}</p>
   </div>
-  <div class="col-sm-5">
+  <div class="col-sm-5" name="yourticks">
     <h3 class="text-center">Dine Tickets</h3>
     <p class="lead text-center">{{ usersTickets }}</p>
   </div>
 </div>
-<p *ngIf="!dataSource.data">
+<p *ngIf="dataSource.data.length < 1" name="loading">
   <em>Loading...</em>
 </p>
 <div>

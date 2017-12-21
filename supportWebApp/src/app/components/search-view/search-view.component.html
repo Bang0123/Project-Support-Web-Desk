@@ -54,7 +54,7 @@
     </p>
   </div>
 </div>
-<p *ngIf="!dataSource.data">
+<p *ngIf="dataSource.data.length < 1" name="loading">
   <em>Søg efter tickets</em>
 </p>
 <div>

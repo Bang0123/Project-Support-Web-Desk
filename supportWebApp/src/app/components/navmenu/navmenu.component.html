@@ -7,38 +7,38 @@
         <span class='icon-bar'></span>
         <span class='icon-bar'></span>
       </button>
-      <a class='navbar-brand' [routerLink]="['/home']">{{ siteTitle }}</a>
+      <a class='navbar-brand' name="title" [routerLink]="['/home']">{{ siteTitle }}</a>
     </div>
     <div class='clearfix'></div>
     <div class='navbar-collapse collapse'>
       <ul class='nav navbar-nav'>
         <li [routerLinkActive]="['link-active']" *ngIf="signedIn | async">
-          <a [routerLink]="['/home']">
+          <a [routerLink]="['/home']" name="home">
             <span class='glyphicon glyphicon-home'></span> Startside
           </a>
         </li>
         <li [routerLinkActive]="['link-active']" *ngIf="signedIn | async">
-          <a [routerLink]="['/tickets']">
+          <a [routerLink]="['/tickets']" name="tickets">
             <span class='glyphicon glyphicon-th-list'></span> Tickets
           </a>
         </li>
         <li [routerLinkActive]="['link-active']" *ngIf="signedIn | async">
-          <a [routerLink]="['/ticket']">
+          <a [routerLink]="['/ticket']" name="ticket">
             <span class='glyphicon glyphicon-edit'></span> Ticket
           </a>
         </li>
         <li [routerLinkActive]="['link-active']" *ngIf="signedIn | async">
-          <a [routerLink]="['/search']">
+          <a [routerLink]="['/search']" name="search">
             <span class='glyphicon glyphicon-search'></span> Søg
           </a>
         </li>
         <li [routerLinkActive]="['link-active']" *ngIf="(signedIn | async) === false">
-          <a [routerLink]="['/login']">
+          <a [routerLink]="['/login']" name="login">
             <span class='glyphicon glyphicon-log-in'></span> Login
           </a>
         </li>
         <li [routerLinkActive]="['link-active']" *ngIf="signedIn | async">
-          <a (click)="signout()">
+          <a (click)="signout()" name="logout">
             <span class='glyphicon glyphicon-log-out'></span> Logout
           </a>
         </li>
