@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TicketViewComponent } from './ticket-view.component';
+import { TestModuleModule } from '../../modules/test-module/test-module.module';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('TicketViewComponent', () => {
   let component: TicketViewComponent;
@@ -8,7 +10,11 @@ describe('TicketViewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TicketViewComponent ]
+      declarations: [ TicketViewComponent ],
+      imports: [
+        TestModuleModule
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
   }));

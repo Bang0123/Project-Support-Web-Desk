@@ -115,16 +115,19 @@ Support Web Desk";
             {
                 using (var emailClient = new SmtpClient())
                 {
-                    await emailClient.ConnectAsync(_mailServer["server"], Convert.ToInt32(_mailServer["port"]), SecureSocketOptions.StartTls);
+                    var server = _mailServer.GetValue<string>("server");
+                    var port = _mailServer.GetValue<int>("port");
+                    await emailClient.ConnectAsync(server, port, SecureSocketOptions.StartTls);
                     emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
-                    await emailClient.AuthenticateAsync(_mailLogin["username"], _mailLogin["password"]);
+                    await emailClient.AuthenticateAsync(_mailLogin.GetValue<string>("username"), _mailLogin.GetValue<string>("password"));
                     await emailClient.SendAsync(message);
                     await emailClient.DisconnectAsync(true);
                     return true;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                _logger.LogDebug(e.Message, e);
                 return false;
             }
         }

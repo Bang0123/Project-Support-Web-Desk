@@ -28,7 +28,7 @@
       <h3>Beskrivelse</h3>
       <p>{{ ticket.body }}</p>
       <hr>
-      <div *ngIf="messages">
+      <div *ngIf="messages.length > 0">
         <h3>Beskeder og Noter</h3>
         <div *ngFor="let message of messages">
           <mat-card>

@@ -13,7 +13,7 @@ export class AppComponent implements OnInit {
   constructor(private oAuthService: OAuthService,
     @Inject('BASE_URL') private baseUrl: string,
     private authenticationService: AuthenticationService,
-    title: Title) {
+    public title: Title) {
     title.setTitle('Support Web Desk');
     // angular-oauth2-oidc configuration.
     this.oAuthService.clientId = 'SupportWebDesk';
@@ -25,10 +25,7 @@ export class AppComponent implements OnInit {
 
     // Loads Discovery Document.
     const url = this.baseUrl + '/.well-known/openid-configuration';
-    const me: AppComponent = this;
-    this.loadDiscovery(url).catch(() => {
-      me.loadDiscovery(url);
-    });
+    this.loadDiscovery(url);
 
     if (this.oAuthService.hasValidAccessToken()) {
       this.authenticationService.init();

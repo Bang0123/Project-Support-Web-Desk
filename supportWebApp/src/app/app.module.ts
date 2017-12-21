@@ -17,10 +17,10 @@ import { TicketViewComponent } from './components/ticket-view/ticket-view.compon
 import { SingleTicketViewComponent } from './components/single-ticket-view/single-ticket-view.component';
 import { TicketService } from './services/ticket.service';
 import { DataService } from './services/data.service';
-import { MatModuleModule } from './modules/mat-module/mat-module.module';
 import { LoginPageComponent } from './components/login-page/login-page.component';
 import { HttpClientModule } from '@angular/common/http';
 import { SearchViewComponent } from './components/search-view/search-view.component';
+import { SharedModule } from './modules/shared/shared.module';
 // import { OAuthConfig } from './oauth.config';
 
 
@@ -44,7 +44,7 @@ import { SearchViewComponent } from './components/search-view/search-view.compon
     AlertModule.forRoot(),
     OAuthModule.forRoot(),
     BrowserAnimationsModule,
-    MatModuleModule,
+    SharedModule.forRoot(),
     RouterModule.forRoot([
       { path: '', redirectTo: 'login', pathMatch: 'full', canActivate: [AuthGuard] },
       { path: 'login', component: LoginPageComponent },
