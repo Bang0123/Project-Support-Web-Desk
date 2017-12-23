@@ -60,7 +60,7 @@ describe('HomeComponent', () => {
       .toEqual('69');
   });
 
-  it('should render text for assigned user tickets and display amount', () => {
+  it('`Acceptance criteria` should render text for assigned user tickets and display amount', () => {
     component.usersTickets = 69;
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
