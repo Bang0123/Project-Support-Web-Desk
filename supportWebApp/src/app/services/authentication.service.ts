@@ -97,6 +97,8 @@ export class AuthenticationService {
       user.email = userInfo.email;
       user.userName = userInfo.name;
       user.roles = userInfo.role;
+      user.firstName = userInfo.given_name;
+      user.lastName = userInfo.family_name;
     }
     return user;
   }

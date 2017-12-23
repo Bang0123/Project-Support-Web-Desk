@@ -51,7 +51,7 @@ describe('SingleTicketViewComponent', () => {
       .toBeFalsy();
   });
 
-  it('`Acceptance criteria` should render a test ticket with messages', () => {
+  it('should render a test ticket with messages', () => {
     const date = new Date();
     const tick: Ticket = {
       id: 123,
