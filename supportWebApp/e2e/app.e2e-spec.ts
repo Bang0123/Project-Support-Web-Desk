@@ -25,8 +25,8 @@ describe('support-web-app App', () => {
   });
 
   it('should see new tickets', () => {
-    expect(page.getNewTicketsNumberPresent()).toBeTruthy();
     expect(page.getNewTicketsTextPresent()).toBeTruthy();
+    expect(page.getNewTicketsNumberPresent()).toBeTruthy();
   });
 
   it('should see my tickets', () => {
@@ -35,10 +35,65 @@ describe('support-web-app App', () => {
   });
 
   it('should see my tickets in datatable', () => {
-    expect(page.getAssignedTicketDataTable()).toBeTruthy();
+    expect(page.getTicketDataTableRowsPresent()).toBeTruthy();
+  });
+
+  it('should navigate to ticket site and not see a ticket', () => {
+    page.navigateToSingleTicketsPage();
+    expect(page.getPageH1()).toEqual('Ticket');
+    expect(page.getNoTicketH1Present()).toBeTruthy();
   });
 
   it('should navigate to tickets and see h1', () => {
-    expect(page.getAllTicketsH1()).toEqual('Se Alle Tickets');
+    page.navigateToAllTicketsPage();
+    expect(page.getPageH1()).toEqual('Se Alle Tickets');
+  });
+
+  it('should see open tickets', () => {
+    expect(page.getOpenTicketsTextPresent()).toBeTruthy();
+    expect(page.getOpenTicketsNumberPresent()).toBeTruthy();
+  });
+
+  it('should see critical tickets', () => {
+    expect(page.getCriticalTicketsTextPresent()).toBeTruthy();
+    expect(page.getCriticalTicketsNumberPresent()).toBeTruthy();
+  });
+
+  it('should see tickets in All tickets datatable', () => {
+    expect(page.getTicketDataTableRowsPresent()).toBeTruthy();
+  });
+
+  it('should change filter of tickets and back', () => {
+    expect(page.testFiltering()).toBeTruthy();
+  });
+
+  it('should click `Se Ticket` on first ticket present in datatable', () => {
+    page.clickToSeeTicketInRow();
+    expect(page.getDisplayTicketDivPresent()).toBeTruthy();
+  });
+
+  it('should see whole ticket', () => {
+    expect(page.getTicketSubjectPresent()).toBeTruthy();
+    expect(page.getTicketBodyPresent()).toBeTruthy();
+    expect(page.getTicketMessagesPresent()).toBeTruthy();
+    expect(page.getTicketAnswerFormPresent()).toBeTruthy();
+  });
+
+  it('Should send intern note and see it afterwards', () => {
+    expect(page.testAnswerFlowIntern()).toBeTruthy();
+  });
+
+  it('Should send extern message and see it afterwards', () => {
+    expect(page.testAnswerFlowExtern()).toBeTruthy();
+  });
+
+  it('should navigate to search page and validate search options', () => {
+    page.navigateToSearchPage();
+    expect(page.searchOptionsDisplayed()).toBeTruthy();
+    expect(page.getSearchForTicketText()).toEqual('Søg efter tickets');
+  });
+
+  it('should search for tickets assigned to `admin`', () => {
+    expect(page.searchForTicketIsPresent()).toBeTruthy();
   });
 });
