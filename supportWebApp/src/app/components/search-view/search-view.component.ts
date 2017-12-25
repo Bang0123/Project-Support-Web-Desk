@@ -56,7 +56,6 @@ export class SearchViewComponent implements OnInit, AfterViewInit {
 
   search() {
     let params = new HttpParams();
-    console.log(this.model);
     if (this.model.hasOwnProperty('ticketid')) {
       params = params.append('ticketid', this.model.ticketid);
     }
@@ -89,7 +88,6 @@ export class SearchViewComponent implements OnInit, AfterViewInit {
       }
       params = params.append('dateto', this.model.dateto.format('YYYY-MM-DD'));
     }
-    console.log('params', params, 'model', this.model);
     this.ticketService.searchTickets(params).subscribe(result => {
       this.dataSource.data = result as Ticket[];
     }, error => {

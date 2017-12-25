@@ -4,27 +4,43 @@
   <div class="row" name="header">
     <div class="col-sm-6">
       <h3>{{ ticket.subject }}</h3>
+      <div class="small">
+          <p name="requester">Anmoder:
+            <br>{{ ticket.requester }}</p>
+          <p name="assignee">Ansvarshavende:
+            <br>{{ ticket.assignee.userName }}</p>
+          <p name="created">Ticket lavet:
+            <br>{{ ticket.createdAt | date:'HH:mm dd-MM-yyyy' }}</p>
+          <p name="updated">Ticket sidst opdateret:
+            <br>{{ ticket.updatedAt | date:'HH:mm dd-MM-yyyy' }}</p>
+        </div>
     </div>
     <div class="col-sm-5">
       <p name="id">Ticket Id: {{ ticket.id }}</p>
-      <p name="status">Status: {{ ticket.status }}</p>
-      <p name="priority">Prioritet: {{ ticket.priority }}</p>
+      <p name="status">Status:
+        <mat-form-field class="select-width">
+          <mat-select [(value)]="ticket.status" (change)="statusChangeEvent($event)">
+            <mat-option *ngFor="let status of statuses" [value]="status">
+              {{ status }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </p>
+      <p name="priority">Prioritet:
+        <mat-form-field class="select-width">
+          <mat-select [(value)]="ticket.priority" (change)="prioritiesChangeEvent($event)">
+            <mat-option *ngFor="let priority of priorities" [value]="priority">
+              {{ priority }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </p>
       <button (click)="goToLatestsAnswer()" class="btn btn-default">Gå til seneste svar i tråden</button>
     </div>
   </div>
   <hr>
   <div class="row" name="body">
-    <div class="col-sm-3 small">
-      <p name="requester">Anmoder:
-        <br>{{ ticket.requester }}</p>
-      <p name="assignee">Ansvarshavende:
-        <br>{{ ticket.assignee.userName }}</p>
-      <p name="created">Ticket lavet:
-        <br>{{ ticket.createdAt | date:'HH:mm dd-MM-yyyy' }}</p>
-      <p name="updated">Ticket sidst opdateret:
-        <br>{{ ticket.updatedAt | date:'HH:mm dd-MM-yyyy' }}</p>
-    </div>
-    <div class="text borders col-md-6">
+    <div class="text borders col-md-12">
       <h3 name="bodycontext">Beskrivelse</h3>
       <p name="body">{{ ticket.body }}</p>
       <hr>

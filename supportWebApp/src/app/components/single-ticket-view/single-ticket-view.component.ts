@@ -6,6 +6,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { Message } from '../../models/message';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
+import { MatSelectChange } from '@angular/material';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-single-ticket-view',
@@ -23,7 +25,8 @@ export class SingleTicketViewComponent implements OnInit, AfterViewInit {
     private ticketService: TicketService,
     private route: ActivatedRoute,
     private router: Router,
-    private dataservice: DataService
+    private dataservice: DataService,
+    protected authenticationService: AuthenticationService
   ) {
     dataservice.currentTicket.subscribe(ticket => {
       this.ticket = ticket;
@@ -48,6 +51,7 @@ export class SingleTicketViewComponent implements OnInit, AfterViewInit {
     msg.updatedAt = new Date();
     this.ticketService.postMessage(msg).subscribe((result) => {
       this.messages.push(result as Message);
+      this.ticket.assignee = this.authenticationService.getUser();
     });
   }
   ngAfterViewInit(): void {
@@ -66,8 +70,15 @@ export class SingleTicketViewComponent implements OnInit, AfterViewInit {
           this.messages.push(msg);
         });
       }
-      console.log(result);
     });
+  }
+
+  statusChangeEvent(event: MatSelectChange) {
+    console.log('statusOnChange', event);
+  }
+
+  prioritiesChangeEvent(event: MatSelectChange) {
+    console.log('priorityOnChange', event);
   }
 
   ShowChoiceError() {
@@ -75,6 +86,6 @@ export class SingleTicketViewComponent implements OnInit, AfterViewInit {
   }
 
   goToLatestsAnswer() {
-    console.log('goToLatestsAnswer clicked', this);
+    console.log('goToLatestsAnswer clicked');
   }
 }

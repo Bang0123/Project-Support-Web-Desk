@@ -118,11 +118,13 @@ namespace SupportWebDesk
             ILoggerFactory loggerFactory,
             IServiceProvider serviceProvider,
             WebDeskContext ctx,
-            IEmailSender emailer)
+            IEmailSender emailer,
+            IDbInitializer dbInitializer)
         {
             loggerFactory.AddConsole(Config.Appsettings.GetSection("Logging"));
             loggerFactory.AddDebug();
             ctx.Database.EnsureCreated();
+            dbInitializer.Initialize(ctx);
 
             if (env.IsDevelopment())
             {

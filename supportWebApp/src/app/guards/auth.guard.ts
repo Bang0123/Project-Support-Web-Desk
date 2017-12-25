@@ -9,7 +9,10 @@ import { Router } from '@angular/router';
 export class AuthGuard implements CanActivate {
   private signedIn: boolean;
 
-  constructor(private authenticationService: AuthenticationService, private router: Router) { }
+  constructor(
+    private authenticationService: AuthenticationService,
+    private router: Router
+  ) { }
 
   public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {
     return this.authenticationService.isSignedIn().pipe(

@@ -174,7 +174,7 @@ namespace SupportWebDesk.Controllers
             {
                 return BadRequest(new { Error = "Ticket id doesnt exist" });
             }
-            var messages = _context.Messages.Where(m => m.TicketId == id).OrderByDescending(msg => msg.UpdatedAt);
+            var messages = _context.Messages.Where(m => m.TicketId == id).OrderBy(msg => msg.UpdatedAt);
             return Ok(messages);
         }
 

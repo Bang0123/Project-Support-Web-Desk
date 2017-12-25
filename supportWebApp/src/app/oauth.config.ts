@@ -46,5 +46,4 @@ export class OAuthConfig {
     // Loads Discovery Document.
     return this.oAuthService.loadDiscoveryDocument(url);
   }
-
 }

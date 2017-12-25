@@ -10,3 +10,7 @@
 .example-selected-value {
   margin: 15px 0;
 }
+
+.select-width {
+  width: 80px;
+}

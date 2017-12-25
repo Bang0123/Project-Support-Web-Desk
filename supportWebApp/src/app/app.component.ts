@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
     this.oAuthService.clientId = 'SupportWebDesk';
     this.oAuthService.scope = 'openid offline_access WebAPI profile roles';
     this.oAuthService.setStorage(this.authenticationService.storage);
-    this.oAuthService.issuer = this.baseUrl ;
+    this.oAuthService.issuer = this.baseUrl;
     this.oAuthService.oidc = false;
     this.oAuthService.requireHttps = false;
 
@@ -39,6 +39,7 @@ export class AppComponent implements OnInit {
     return this.oAuthService.loadDiscoveryDocument(url);
 
   }
+
   ngOnInit() {
   }
 }
