@@ -45,22 +45,6 @@ describe('SearchViewComponent', () => {
       .toBeTruthy();
   });
 
-  it('should not render error messages', () => {
-    component.errorMessages = [];
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('div.alert.alert-danger.alert-dismissable.has-error'))
-      .toBeFalsy();
-  });
-
-  it('should render error messages', () => {
-    component.errorMessages = [{ description: 'Test' }];
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('div.alert.alert-danger.alert-dismissable.has-error div p strong').innerHTML)
-      .toEqual('Test');
-  });
-
   it('should render text for loading', () => {
     component.dataSource.data = [];
     fixture.detectChanges();

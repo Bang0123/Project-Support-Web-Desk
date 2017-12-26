@@ -52,20 +52,4 @@ describe('LoginPageComponent', () => {
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('div form button')).toBeTruthy();
   });
-
-  it('should not render error messages', () => {
-    component.errorMessages = [];
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('div div.alert.alert-danger.alert-dismissable.has-error'))
-      .toBeFalsy();
-  });
-
-  it('should render error messages', () => {
-    component.errorMessages = [{ description: 'Test' }];
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('div div.alert.alert-danger.alert-dismissable.has-error div p strong').innerHTML)
-      .toEqual('Test');
-  });
 });

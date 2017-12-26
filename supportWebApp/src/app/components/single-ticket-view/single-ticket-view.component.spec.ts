@@ -98,29 +98,29 @@ describe('SingleTicketViewComponent', () => {
     expect(compiled.querySelector('div[name="displayticket"] div.row div.col-sm-5 p[name="id"]').innerHTML)
       .toEqual('Ticket Id: 123');
     expect(compiled.querySelector('div[name="displayticket"] div.row div.col-sm-5 p[name="status"]').innerHTML)
-      .toEqual('Status: Test');
+      .toContain('Status:');
     expect(compiled.querySelector('div[name="displayticket"] div.row[name="header"] div.col-sm-5 p[name="priority"]').innerHTML)
-      .toEqual('Prioritet: Test');
-    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.col-sm-3.small p[name="requester"]').innerHTML)
+      .toContain('Prioritet:');
+    expect(compiled.querySelector('div[name="displayticket"] div.small p[name="requester"]').innerHTML)
       .toContain('Test');
-    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.col-sm-3.small p[name="assignee"]').innerHTML)
+    expect(compiled.querySelector('div[name="displayticket"] div.small p[name="assignee"]').innerHTML)
       .toContain('Test');
-    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.col-sm-3.small p[name="created"]').innerHTML)
+    expect(compiled.querySelector('div[name="displayticket"] div.small p[name="created"]').innerHTML)
       .toContain(moment(date).format('HH:mm DD-MM-YYYY'));
-    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.col-sm-3.small p[name="updated"]').innerHTML)
+    expect(compiled.querySelector('div[name="displayticket"] div.small p[name="updated"]').innerHTML)
       .toContain(moment(date).format('HH:mm DD-MM-YYYY'));
-    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.text.borders.col-md-6 h3').innerHTML)
+    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.text.borders.col-md-12 h3').innerHTML)
       .toEqual('Beskrivelse');
-    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.text.borders.col-md-6 p[name="body"]').innerHTML)
+    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.text.borders.col-md-12 p[name="body"]').innerHTML)
       .toEqual('Test');
-    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.text.borders.col-md-6 div[name="messagedir"]'))
+    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.text.borders.col-md-12 div[name="messagedir"]'))
       .toBeTruthy();
     expect(compiled.querySelector(
-      'div[name="displayticket"] div.row[name="body"] div.text.borders.col-md-6 div[name="messagedir"] h3'
+      'div[name="displayticket"] div.row[name="body"] div.text.borders.col-md-12 div[name="messagedir"] h3'
     ).innerHTML)
       .toEqual('Beskeder og Noter');
     expect(compiled.querySelector(
-      'div[name="displayticket"] div.row[name="body"] div.text.borders.col-md-6 div[name="messagedir"] div'
+      'div[name="displayticket"] div.row[name="body"] div.text.borders.col-md-12 div[name="messagedir"] div'
     ))
       .toBeTruthy();
     expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.row[name="answerinputs"]'))
@@ -152,22 +152,22 @@ describe('SingleTicketViewComponent', () => {
     expect(compiled.querySelector('div[name="displayticket"] div.row div.col-sm-5 p[name="id"]').innerHTML)
       .toEqual('Ticket Id: 123');
     expect(compiled.querySelector('div[name="displayticket"] div.row div.col-sm-5 p[name="status"]').innerHTML)
-      .toEqual('Status: Test');
+      .toContain('Status:');
     expect(compiled.querySelector('div[name="displayticket"] div.row[name="header"] div.col-sm-5 p[name="priority"]').innerHTML)
-      .toEqual('Prioritet: Test');
-    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.col-sm-3.small p[name="requester"]').innerHTML)
+      .toContain('Prioritet:');
+    expect(compiled.querySelector('div[name="displayticket"] div.small p[name="requester"]').innerHTML)
       .toContain('Test');
-    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.col-sm-3.small p[name="assignee"]').innerHTML)
+    expect(compiled.querySelector('div[name="displayticket"] div.small p[name="assignee"]').innerHTML)
       .toContain('Test');
-    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.col-sm-3.small p[name="created"]').innerHTML)
+    expect(compiled.querySelector('div[name="displayticket"] div.small p[name="created"]').innerHTML)
       .toContain(moment(date).format('HH:mm DD-MM-YYYY'));
-    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.col-sm-3.small p[name="updated"]').innerHTML)
+    expect(compiled.querySelector('div[name="displayticket"] div.small p[name="updated"]').innerHTML)
       .toContain(moment(date).format('HH:mm DD-MM-YYYY'));
-    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.text.borders.col-md-6 h3').innerHTML)
+    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.text.borders.col-md-12 h3').innerHTML)
       .toEqual('Beskrivelse');
-    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.text.borders.col-md-6 p[name="body"]').innerHTML)
+    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.text.borders.col-md-12 p[name="body"]').innerHTML)
       .toEqual('Test');
-    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.text.borders.col-md-6 div[name="messagedir"]'))
+    expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.text.borders.col-md-12 div[name="messagedir"]'))
       .toBeFalsy();
     expect(compiled.querySelector('div[name="displayticket"] div.row[name="body"] div.row[name="answerinputs"]'))
       .toBeTruthy();
