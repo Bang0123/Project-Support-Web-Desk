@@ -4,6 +4,7 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import { MatSnackBar } from '@angular/material';
 
 
 @Component({
@@ -12,12 +13,13 @@ import { Observable } from 'rxjs/Observable';
   styleUrls: ['./login-page.component.css']
 })
 export class LoginPageComponent extends Signin {
-
   working: boolean;
   constructor(protected router: Router,
     protected oAuthService: OAuthService,
-    protected authenticationService: AuthenticationService) {
-    super(router, oAuthService, authenticationService);
+    protected authenticationService: AuthenticationService,
+    public snackBar: MatSnackBar
+  ) {
+    super(router, oAuthService, authenticationService, snackBar);
     this.isLoading().subscribe(next => {
       next = false;
     });

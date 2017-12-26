@@ -46,14 +46,6 @@
     </div>
   </div>
 </form>
-<div *ngIf="errorMessages.length > 0" class="alert alert-danger alert-dismissable has-error">
-  <div *ngFor="let errorMessage of errorMessages">
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-    <p>Error:
-      <strong>{{ errorMessage.description }}</strong>
-    </p>
-  </div>
-</div>
 <p *ngIf="dataSource.data.length < 1" name="loading">
   <em>Søg efter tickets</em>
 </p>

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { TicketService } from '../../services/ticket.service';
 import { Ticket } from '../../models/ticket';
-import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, MatSnackBar } from '@angular/material';
 import { DataService } from '../../services/data.service';
 import { HttpParams } from '@angular/common/http';
 import { FormControl } from '@angular/forms';
@@ -37,7 +37,6 @@ export class SearchViewComponent implements OnInit, AfterViewInit {
   public model: any = {};
   dateto = new FormControl(moment());
   datefrom = new FormControl(moment());
-  errorMessages = [];
   displayedColumns = [
     'status',
     'priority',
@@ -49,7 +48,9 @@ export class SearchViewComponent implements OnInit, AfterViewInit {
   ];
   priorities = ['Kritisk', 'Høj', 'Normal', 'Lav'];
   constructor(private ticketService: TicketService,
-    private dataservice: DataService) { }
+    private dataservice: DataService,
+    public snackBar: MatSnackBar
+  ) { }
 
   ngOnInit() {
   }
@@ -76,14 +77,18 @@ export class SearchViewComponent implements OnInit, AfterViewInit {
     }
     if (this.model.datefrom != null) {
       if (this.model.datefrom.isAfter(this.model.dateto)) {
-        this.errorMessages.push({ description: 'Dato fra skal være før dato til' });
+        this.snackBar.open('Dato fra skal være før dato til', 'Ok', {
+          duration: 5000,
+        });
         return;
       }
       params = params.append('datefrom', this.model.datefrom.format('YYYY-MM-DD'));
     }
     if (this.model.dateto != null) {
       if (this.model.dateto.isBefore(this.model.datefrom)) {
-        this.errorMessages.push({ description: 'Dato til skal være efter dato fra' });
+        this.snackBar.open('Dato til skal være efter dato fra', 'Ok', {
+          duration: 5000,
+        });
         return;
       }
       params = params.append('dateto', this.model.dateto.format('YYYY-MM-DD'));

@@ -179,6 +179,43 @@ namespace SupportWebDesk.Controllers
         }
 
         /// <summary>
+        /// POST: api/Tickets/status
+        /// </summary>
+        /// <returns>Returns result if status changed</returns>
+        [HttpPost("status")]
+        public async Task<IActionResult> PostChangeTicketStatus([FromBody] TicketStatusChangeViewModel change)
+        {
+            var ticket = await _context.Tickets.FindAsync(change.TicketId);
+            var old = ticket.Status;
+            if (ticket == null)
+            {
+                return BadRequest(new { Error = "Ticket id doesnt exist" });
+            }
+            ticket.SetNewStatus(change.Status);
+            await _context.SaveChangesAsync();
+            return Ok(new { id = ticket.Id, newStatus = ticket.Status, oldStatus = old });
+        }
+
+        /// <summary>
+        /// POST: api/Tickets/priority
+        /// </summary>
+        /// <returns>Returns result if priority changed</returns>
+        [HttpPost("priority")]
+        public async Task<IActionResult> PostChangeTicketPriority([FromBody] TicketPriorityChangeViewModel change)
+        {
+            var ticket = await _context.Tickets.FindAsync(change.TicketId);
+            var old = ticket.Priority;
+            if (ticket == null)
+            {
+                return BadRequest(new { Error = "Ticket id doesnt exist" });
+            }
+            ticket.SetNewPriority(change.Priority);
+            await _context.SaveChangesAsync();
+            return Ok(new { id = ticket.Id, newPriority = ticket.Status, oldPriority = old });
+        }
+
+
+        /// <summary>
         /// GET: api/Tickets/search
         /// </summary>
         /// <returns>Returns all tickets, sorted by updatedat dsc</returns>

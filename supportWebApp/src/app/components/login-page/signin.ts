@@ -2,7 +2,7 @@
 import { Observable } from 'rxjs/Observable';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-
+import { MatSnackBar } from '@angular/material';
 import { AuthenticationService } from '../../services/authentication.service';
 
 /**
@@ -10,12 +10,13 @@ import { AuthenticationService } from '../../services/authentication.service';
  */
 export class Signin {
   model: any = {};
-  errorMessages: any[] = [];
   private loading = new BehaviorSubject<boolean>(false);
   constructor(
     protected router: Router,
     protected oAuthService: OAuthService,
-    protected authenticationService: AuthenticationService) { }
+    protected authenticationService: AuthenticationService,
+    public snackBar: MatSnackBar
+  ) { }
 
   signin(): void {
     this.loading.next(true);
@@ -36,7 +37,9 @@ export class Signin {
         this.loading.next(false);
         this.router.navigate([redirect]);
       }, () => {
-        this.errorMessages.push({ description: 'login failed.' });
+        this.snackBar.open('login failed.', 'Ok', {
+          duration: 2500,
+        });
         this.loading.next(false);
       })
       .catch((error: any) => {
@@ -46,23 +49,25 @@ export class Signin {
 
           switch (body.error) {
             case 'invalid_grant':
-              this.errorMessages.push({ description: 'Invalid email or password.' });
+              this.snackBar.open('Invalid email or password.', 'Ok', {
+                duration: 2500,
+              });
               break;
             default:
-              this.errorMessages.push({ description: 'Unexpected error. Try again.' });
+              this.snackBar.open('Unexpected error. Try again.', 'Ok', {
+                duration: 2500,
+              });
           }
         } else {
           const errMsg = (error.message) ? error.message :
             error.status ? `${error.status} - ${error.statusText}` : 'Server error';
           console.log(errMsg);
-          this.errorMessages.push({ description: 'Server error. Try later.' });
+          this.snackBar.open('Server error. Try later.', 'Ok', {
+            duration: 5000,
+          });
         }
         this.loading.next(false);
       });
-  }
-
-  clearMessages(): void {
-    this.errorMessages = [];
   }
 
   public isLoading(): Observable<boolean> {

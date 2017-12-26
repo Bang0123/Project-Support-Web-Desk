@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { TicketService } from '../../services/ticket.service';
 import { Ticket } from '../../models/ticket';
 import { User } from '../../models/user';
@@ -6,7 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { Message } from '../../models/message';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
-import { MatSelectChange } from '@angular/material';
+import { MatSelectChange, MatSnackBar } from '@angular/material';
 import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
@@ -21,12 +21,14 @@ export class SingleTicketViewComponent implements OnInit, AfterViewInit {
   messages: Message[] = [];
   statuses = ['Åben', 'Igang', 'Lukket'];
   priorities = ['Kritisk', 'Høj', 'Normal', 'Lav'];
+  @ViewChild('answerinputs') el: ElementRef;
   constructor(
     private ticketService: TicketService,
     private route: ActivatedRoute,
     private router: Router,
     private dataservice: DataService,
-    protected authenticationService: AuthenticationService
+    protected authenticationService: AuthenticationService,
+    public snackBar: MatSnackBar
   ) {
     dataservice.currentTicket.subscribe(ticket => {
       this.ticket = ticket;
@@ -74,18 +76,31 @@ export class SingleTicketViewComponent implements OnInit, AfterViewInit {
   }
 
   statusChangeEvent(event: MatSelectChange) {
-    console.log('statusOnChange', event);
+    this.ticketService.postStatusChange(this.ticket.id, event.value)
+      .subscribe((result) => {
+        this.snackBar.open('Status Changed', 'Ok', {
+          duration: 2000,
+        });
+      });
   }
 
   prioritiesChangeEvent(event: MatSelectChange) {
-    console.log('priorityOnChange', event);
+    this.ticketService.postPriorityChange(this.ticket.id, event.value)
+      .subscribe((result) => {
+        this.snackBar.open('Priority Changed', 'Ok', {
+          duration: 2000,
+        });
+      });
   }
 
   ShowChoiceError() {
-    console.log('Error choose either intern or ekstern');
+    this.snackBar.open('Vælg enten Intern eller Ekstern', 'Ok', {
+      duration: 2500,
+    });
   }
 
   goToLatestsAnswer() {
-    console.log('goToLatestsAnswer clicked');
+    this.el.nativeElement.scrollIntoView({ behavior: 'smooth' });
+    this.el.nativeElement.focus();
   }
 }

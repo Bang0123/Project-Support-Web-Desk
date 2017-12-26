@@ -14,75 +14,97 @@ export class TicketService {
   ) { }
 
   getTickets() {
-    const apiUrl = '/api/tickets';
-    return this.http.get(this.baseUrl + apiUrl, {
+    const apiUrl = this.baseUrl + '/api/tickets';
+    return this.http.get(apiUrl, {
       headers: this.authenticationService.getAuthorizationHeader()
     });
   }
 
   getcriticalAmount() {
-    const apiUrl = '/api/tickets/criticalamount';
-    return this.http.get(this.baseUrl + apiUrl, {
+    const apiUrl = this.baseUrl + '/api/tickets/criticalamount';
+    return this.http.get(apiUrl, {
       headers: this.authenticationService.getAuthorizationHeader()
     });
   }
 
   getOpenAmount() {
-    const apiUrl = '/api/tickets/openamount';
-    return this.http.get(this.baseUrl + apiUrl, {
+    const apiUrl = this.baseUrl + '/api/tickets/openamount';
+    return this.http.get(apiUrl, {
       headers: this.authenticationService.getAuthorizationHeader()
     });
   }
 
   getAmountOfNewTickets() {
-    const apiUrl = '/api/tickets/newamount';
-    return this.http.get(this.baseUrl + apiUrl, {
+    const apiUrl = this.baseUrl + '/api/tickets/newamount';
+    return this.http.get(apiUrl, {
       headers: this.authenticationService.getAuthorizationHeader()
     });
   }
 
   getAssigneesTickets() {
-    const apiUrl = '/api/tickets/assignee/';
+    const apiUrl = this.baseUrl + '/api/tickets/assignee/';
     return this.http.get(
-      this.baseUrl + apiUrl + this.authenticationService.getUser().userName, {
+      apiUrl + this.authenticationService.getUser().userName, {
         headers: this.authenticationService.getAuthorizationHeader()
       });
   }
 
   getAssigneesTicketsAmount() {
-    const apiUrl = '/api/tickets/assigneeamount/';
+    const apiUrl = this.baseUrl + '/api/tickets/assigneeamount/';
     return this.http.get(
-      this.baseUrl + apiUrl + this.authenticationService.getUser().userName, {
+      apiUrl + this.authenticationService.getUser().userName, {
         headers: this.authenticationService.getAuthorizationHeader()
       });
   }
 
   postMessage(msg: Message) {
-    const apiUrl = '/api/messages';
+    const apiUrl = this.baseUrl + '/api/messages';
     const message = msg;
     const usr = this.authenticationService.getUser();
     message.author = usr.userName;
     message.sender = usr.userName;
     message.senderEmail = '';
-    return this.http.post(this.baseUrl + apiUrl, message, {
+    return this.http.post(apiUrl, message, {
       headers: this.authenticationService.getAuthorizationHeader()
     });
   }
 
   getTicketMessages(ticketid: number) {
-    const apiUrl = '/api/Tickets/messages/';
+    const apiUrl = this.baseUrl + '/api/Tickets/messages/' + ticketid;
     return this.http.get(
-      this.baseUrl + apiUrl + ticketid, {
+      apiUrl, {
         headers: this.authenticationService.getAuthorizationHeader()
       });
   }
 
   searchTickets(searchParams: HttpParams) {
-    const apiUrl = '/api/Tickets/search';
+    const apiUrl = this.baseUrl + '/api/Tickets/search';
     return this.http.get(
-      this.baseUrl + apiUrl, {
+      apiUrl, {
         headers: this.authenticationService.getAuthorizationHeader(),
         params: searchParams
       });
+  }
+
+  postStatusChange(ticketid: number, status: string) {
+    const apiUrl = this.baseUrl + '/api/tickets/status';
+    const body = {
+      TicketId: ticketid,
+      Status: status
+    };
+    return this.http.post(apiUrl, body, {
+      headers: this.authenticationService.getAuthorizationHeader()
+    });
+  }
+
+  postPriorityChange(ticketid: number, priority: string) {
+    const apiUrl = this.baseUrl + '/api/tickets/priority';
+    const body = {
+      TicketId: ticketid,
+      Priority: priority
+    };
+    return this.http.post(apiUrl, body, {
+      headers: this.authenticationService.getAuthorizationHeader()
+    });
   }
 }

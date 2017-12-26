@@ -38,5 +38,46 @@ namespace SupportWebDesk.Data.Models
         public DateTime UpdatedAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
+
+        public void SetNewStatus(string status)
+        {
+            switch (status)
+            {
+                case STATUS_OPEN:
+                    this.Status = STATUS_OPEN;
+                    break;
+                case STATUS_ONGOING:
+                    this.Status = STATUS_ONGOING;
+                    break;
+                case STATUS_CLOSED:
+                    this.Status = STATUS_CLOSED;
+                    break;
+                default:
+                    this.Status = STATUS_OPEN;
+                    break;
+            }
+        }
+
+        public void SetNewPriority(string priority)
+        {
+            switch (priority)
+            {
+                case PRIORITY_CRITICAL:
+                    this.Priority = PRIORITY_CRITICAL;
+                    break;
+                case PRIORITY_HIGH:
+                    this.Priority = PRIORITY_HIGH;
+                    break;
+                case PRIORITY_NORMAL:
+                    this.Priority = PRIORITY_NORMAL;
+                    break;
+                case PRIORITY_LOW:
+                    this.Priority = PRIORITY_LOW;
+                    break;
+                default:
+                    this.Priority = PRIORITY_NORMAL;
+                    break;
+            }
+        }
     }
 }

@@ -3,10 +3,10 @@
     <h2 class="form-signin-heading">Login</h2>
     <label for="inputEmail" class="sr-only">Email address</label>
     <input type="email" id="inputEmail" [(ngModel)]="model.username" class="form-control" name="username" #username="ngModel"
-      placeholder="email" (keyup)="clearMessages()" required autofocus>
+      placeholder="email" required autofocus>
     <label for="inputPassword" class="sr-only">Password</label>
     <input type="password" id="inputPassword" [(ngModel)]="model.password" class="form-control" name="password" #password="ngModel"
-      placeholder="password" (keyup)="clearMessages()" required>
+      placeholder="password" required>
     <div class="checkbox">
       <label>
         <input type="checkbox" value="remember-me"> Remember me
@@ -17,13 +17,4 @@
       <mat-spinner class="progress-comp"></mat-spinner>
     </div>
   </form>
-  <br>
-  <div *ngIf="errorMessages.length > 0" class="alert alert-danger alert-dismissable has-error">
-    <div *ngFor="let errorMessage of errorMessages">
-      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-      <p>Error:
-        <strong>{{ errorMessage.description }}</strong>
-      </p>
-    </div>
-  </div>
 </div>

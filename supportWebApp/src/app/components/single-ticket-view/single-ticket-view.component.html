@@ -5,15 +5,15 @@
     <div class="col-sm-6">
       <h3>{{ ticket.subject }}</h3>
       <div class="small">
-          <p name="requester">Anmoder:
-            <br>{{ ticket.requester }}</p>
-          <p name="assignee">Ansvarshavende:
-            <br>{{ ticket.assignee.userName }}</p>
-          <p name="created">Ticket lavet:
-            <br>{{ ticket.createdAt | date:'HH:mm dd-MM-yyyy' }}</p>
-          <p name="updated">Ticket sidst opdateret:
-            <br>{{ ticket.updatedAt | date:'HH:mm dd-MM-yyyy' }}</p>
-        </div>
+        <p name="requester">Anmoder:
+          <br>{{ ticket.requester }}</p>
+        <p name="assignee">Ansvarshavende:
+          <br>{{ ticket.assignee.userName }}</p>
+        <p name="created">Ticket lavet:
+          <br>{{ ticket.createdAt | date:'HH:mm dd-MM-yyyy' }}</p>
+        <p name="updated">Ticket sidst opdateret:
+          <br>{{ ticket.updatedAt | date:'HH:mm dd-MM-yyyy' }}</p>
+      </div>
     </div>
     <div class="col-sm-5">
       <p name="id">Ticket Id: {{ ticket.id }}</p>
@@ -74,7 +74,7 @@
     </div>
     <div class="row" name="answerinputs">
       <div class="col-md-6">
-        <textarea [(ngModel)]="body" class="form-control" rows="4"></textarea>
+        <textarea #answerinputs [(ngModel)]="body" class="form-control" rows="4"></textarea>
       </div>
       <div class="col-md-2">
         <br>
