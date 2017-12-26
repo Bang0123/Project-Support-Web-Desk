@@ -1,99 +1,114 @@
-import { AppPage } from './app.po';
+import { AppPage } from './pages/app.po';
+import { LoginPage } from './pages/login.po';
+import { HomePage } from './pages/home.po';
+import { SingleTicketPage } from './pages/singleticket.po';
+import { TicketsPage } from './pages/tickets.po';
+import { SearchPage } from './pages/search.po';
 
-describe('support-web-app App', () => {
-  let page: AppPage;
+describe('Support Web Desk App', () => {
+  let apppage: AppPage;
+  let loginpage: LoginPage;
+  let homepage: HomePage;
+  let singlepage: SingleTicketPage;
+  let ticketspage: TicketsPage;
+  let searchpage: SearchPage;
 
   beforeEach(() => {
-    page = new AppPage();
+    apppage = new AppPage();
+    loginpage = new LoginPage();
+    homepage = new HomePage();
+    singlepage = new SingleTicketPage();
+    ticketspage = new TicketsPage();
+    searchpage = new SearchPage();
   });
 
   it('should display Login screen when navigated to the site', () => {
-    page.navigateToSite();
-    expect(page.getLoginFormText()).toEqual('Login');
-    expect(page.loginFormPresent()).toBeTruthy();
-    expect(page.navmenuLoginOptionPresent()).toBeTruthy();
+    apppage.navigateToSite();
+    expect(loginpage.getLoginFormText()).toEqual('Login');
+    expect(loginpage.loginFormPresent()).toBeTruthy();
+    expect(loginpage.navmenuLoginOptionPresent()).toBeTruthy();
   });
 
   it('should Login and see startside', () => {
-    expect(page.getLoginFormText()).toEqual('Login');
-    page.actionLoginAndSeeHomePage();
-    expect(page.getHomePageh1Text()).toEqual('Startside');
+    expect(loginpage.getLoginFormText()).toEqual('Login');
+    loginpage.actionLoginAndSeeHomePage();
+    expect(homepage.getHomePageh1Text()).toEqual('Startside');
   });
 
   it('should see greeting me `Admin`', () => {
-    expect(page.getGreetingText()).toEqual('Velkommen Admin');
+    expect(homepage.getGreetingText()).toEqual('Velkommen Admin');
   });
 
   it('should see new tickets', () => {
-    expect(page.getNewTicketsTextPresent()).toBeTruthy();
-    expect(page.getNewTicketsNumberPresent()).toBeTruthy();
+    expect(homepage.getNewTicketsTextPresent()).toBeTruthy();
+    expect(homepage.getNewTicketsNumberPresent()).toBeTruthy();
   });
 
   it('should see my tickets', () => {
-    expect(page.getAssignedTicketsTextPresent()).toBeTruthy();
-    expect(page.getAssignedTicketsNumberPresent()).toBeTruthy();
+    expect(homepage.getAssignedTicketsTextPresent()).toBeTruthy();
+    expect(homepage.getAssignedTicketsNumberPresent()).toBeTruthy();
   });
 
   it('should see my tickets in datatable', () => {
-    expect(page.getTicketDataTableRowsPresent()).toBeTruthy();
+    expect(apppage.getTicketDataTableRowsPresent()).toBeTruthy();
   });
 
   it('should navigate to ticket site and not see a ticket', () => {
-    page.navigateToSingleTicketsPage();
-    expect(page.getPageH1()).toEqual('Ticket');
-    expect(page.getNoTicketH1Present()).toBeTruthy();
+    apppage.navigateToSingleTicketsPage();
+    expect(apppage.getPageH1()).toEqual('Ticket');
+    expect(singlepage.getNoTicketH1Present()).toBeTruthy();
   });
 
   it('should navigate to tickets and see h1', () => {
-    page.navigateToAllTicketsPage();
-    expect(page.getPageH1()).toEqual('Se Alle Tickets');
+    apppage.navigateToAllTicketsPage();
+    expect(apppage.getPageH1()).toEqual('Se Alle Tickets');
   });
 
   it('should see open tickets', () => {
-    expect(page.getOpenTicketsTextPresent()).toBeTruthy();
-    expect(page.getOpenTicketsNumberPresent()).toBeTruthy();
+    expect(ticketspage.getOpenTicketsTextPresent()).toBeTruthy();
+    expect(ticketspage.getOpenTicketsNumberPresent()).toBeTruthy();
   });
 
   it('should see critical tickets', () => {
-    expect(page.getCriticalTicketsTextPresent()).toBeTruthy();
-    expect(page.getCriticalTicketsNumberPresent()).toBeTruthy();
+    expect(ticketspage.getCriticalTicketsTextPresent()).toBeTruthy();
+    expect(ticketspage.getCriticalTicketsNumberPresent()).toBeTruthy();
   });
 
   it('should see tickets in All tickets datatable', () => {
-    expect(page.getTicketDataTableRowsPresent()).toBeTruthy();
+    expect(apppage.getTicketDataTableRowsPresent()).toBeTruthy();
   });
 
   it('should change filter of tickets and back', () => {
-    expect(page.testFiltering()).toBeTruthy();
+    expect(ticketspage.testFiltering()).toBeTruthy();
   });
 
   it('should click `Se Ticket` on first ticket present in datatable', () => {
-    page.clickToSeeTicketInRow();
-    expect(page.getDisplayTicketDivPresent()).toBeTruthy();
+    ticketspage.clickToSeeTicketInRow();
+    expect(singlepage.getDisplayTicketDivPresent()).toBeTruthy();
   });
 
   it('should see whole ticket', () => {
-    expect(page.getTicketSubjectPresent()).toBeTruthy();
-    expect(page.getTicketBodyPresent()).toBeTruthy();
-    expect(page.getTicketMessagesPresent()).toBeTruthy();
-    expect(page.getTicketAnswerFormPresent()).toBeTruthy();
+    expect(singlepage.getTicketSubjectPresent()).toBeTruthy();
+    expect(singlepage.getTicketBodyPresent()).toBeTruthy();
+    expect(singlepage.getTicketMessagesPresent()).toBeTruthy();
+    expect(singlepage.getTicketAnswerFormPresent()).toBeTruthy();
   });
 
   it('Should send intern note and see it afterwards', () => {
-    expect(page.testAnswerFlowIntern()).toBeTruthy();
+    expect(singlepage.testAnswerFlowIntern()).toBeTruthy();
   });
 
   it('Should send extern message and see it afterwards', () => {
-    expect(page.testAnswerFlowExtern()).toBeTruthy();
+    expect(singlepage.testAnswerFlowExtern()).toBeTruthy();
   });
 
   it('should navigate to search page and validate search options', () => {
-    page.navigateToSearchPage();
-    expect(page.searchOptionsDisplayed()).toBeTruthy();
-    expect(page.getSearchForTicketText()).toEqual('Søg efter tickets');
+    apppage.navigateToSearchPage();
+    expect(searchpage.searchOptionsDisplayed()).toBeTruthy();
+    expect(searchpage.getSearchForTicketText()).toEqual('Søg efter tickets');
   });
 
   it('should search for tickets assigned to `admin`', () => {
-    expect(page.searchForTicketIsPresent()).toBeTruthy();
+    expect(searchpage.searchForTicketIsPresent()).toBeTruthy();
   });
 });
