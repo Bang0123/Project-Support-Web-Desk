@@ -113,9 +113,9 @@ namespace SupportWebDesk.Controllers
             if (ticket.Assignee == null)
             {
                 ticket.Assignee = await _userManager.FindByNameAsync(message.Author);
-                await _context.SaveChangesAsync();
             }
-
+            ticket.Status = Ticket.STATUS_ONGOING;
+            await _context.SaveChangesAsync();
             if (message.IsNote)
             {
                 return CreatedAtAction("GetMessage", new { id = message.Id }, message);
@@ -146,8 +146,9 @@ namespace SupportWebDesk.Controllers
             {
                 ticket.Assignee = null;
                 _context.Messages.Remove(message);
+                ticket.Status = Ticket.STATUS_OPEN;
                 await _context.SaveChangesAsync();
-                return BadRequest(new { Error = "Couldnt send Email" });
+                return BadRequest(new { Error = "Couldnt send Email\nStatus remain 'Open'" });
             }
         }
 

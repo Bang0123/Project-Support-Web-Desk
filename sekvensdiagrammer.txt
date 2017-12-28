@@ -80,3 +80,18 @@ backend<-Database:return result
 Angular frontend<--backend:return result
 
 Bruger<--Angular frontend:Vis search resultat 
+
+user story 3
+
+actor Bruger
+title User story 3
+Bruger->Angular frontend:Skifter ticket status\neller prioritet
+Angular frontend->backend:PostChange(ticketid)
+
+database Database
+backend->Database:Update
+backend<-Database:return Ok
+
+Angular frontend<--backend:return result
+
+Bruger<--Angular frontend:Popup der bekræfter change 

@@ -10,97 +10,110 @@ import { MatSelectChange, MatSnackBar } from '@angular/material';
 import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
-  selector: 'app-single-ticket-view',
-  templateUrl: './single-ticket-view.component.html',
-  styleUrls: ['./single-ticket-view.component.css']
+    selector: 'app-single-ticket-view',
+    templateUrl: './single-ticket-view.component.html',
+    styleUrls: ['./single-ticket-view.component.css']
 })
 export class SingleTicketViewComponent implements OnInit, AfterViewInit {
-  public ticket: Ticket;
-  body: string;
-  isNote: boolean;
-  messages: Message[] = [];
-  statuses = ['Åben', 'Igang', 'Lukket'];
-  priorities = ['Kritisk', 'Høj', 'Normal', 'Lav'];
-  @ViewChild('answerinputs') el: ElementRef;
-  constructor(
-    private ticketService: TicketService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private dataservice: DataService,
-    protected authenticationService: AuthenticationService,
-    public snackBar: MatSnackBar
-  ) {
-    dataservice.currentTicket.subscribe(ticket => {
-      this.ticket = ticket;
-      if (this.ticket.messages != null) {
-        this.messages = ticket.messages;
-      } else {
-        ticket.messages = [];
-      }
-    });
-  }
-  ngOnInit() { }
-  sendAnswer() {
-    if (this.isNote == null) {
-      this.ShowChoiceError();
-      return;
+    public ticket: Ticket;
+    body: string;
+    isNote: boolean;
+    messages: Message[] = [];
+    statuses = ['Åben', 'Igang', 'Lukket'];
+    priorities = ['Kritisk', 'Høj', 'Normal', 'Lav'];
+    @ViewChild('answerinputs') el: ElementRef;
+    constructor(
+        private ticketService: TicketService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private dataservice: DataService,
+        protected authenticationService: AuthenticationService,
+        public snackBar: MatSnackBar
+    ) {
+        dataservice.currentTicket.subscribe(ticket => {
+            this.ticket = ticket;
+            if (this.ticket.messages != null) {
+                this.messages = ticket.messages;
+            } else {
+                ticket.messages = [];
+            }
+        });
     }
-    const msg = new Message();
-    msg.body = this.body;
-    msg.ticketId = this.ticket.id;
-    msg.isNote = this.isNote;
-    msg.createdAt = new Date();
-    msg.updatedAt = new Date();
-    this.ticketService.postMessage(msg).subscribe((result) => {
-      this.messages.push(result as Message);
-      this.ticket.assignee = this.authenticationService.getUser();
-    });
-  }
-  ngAfterViewInit(): void {
-    if (this.ticket.id > 0) {
-      this.loadTicketMessages();
+    ngOnInit() { }
+    sendAnswer() {
+        if (this.isNote == null) {
+            this.ShowChoiceError();
+            return;
+        }
+        const msg = new Message();
+        msg.body = this.body;
+        msg.ticketId = this.ticket.id;
+        msg.isNote = this.isNote;
+        msg.createdAt = new Date();
+        msg.updatedAt = new Date();
+        this.ticketService.postMessage(msg).subscribe((result) => {
+            this.messages.push(result as Message);
+            this.ticket.assignee = this.authenticationService.getUser();
+            if (this.ticket.status === 'Åben') {
+                this.statusChange(this.statuses[1]);
+            }
+        });
     }
-  }
 
-  loadTicketMessages() {
-    this.ticketService.getTicketMessages(this.ticket.id).subscribe((result) => {
-      if (this.messages.length < 1) {
-        this.messages = result as Message[];
-      } else {
-        const newmsgs = result as Message[];
-        newmsgs.forEach((msg) => {
-          this.messages.push(msg);
+    ngAfterViewInit(): void {
+        if (this.ticket.id > 0) {
+            this.loadTicketMessages();
+        }
+    }
+
+    loadTicketMessages() {
+        this.ticketService.getTicketMessages(this.ticket.id).subscribe((result) => {
+            if (this.messages.length < 1) {
+                this.messages = result as Message[];
+            } else {
+                const newmsgs = result as Message[];
+                newmsgs.forEach((msg) => {
+                    this.messages.push(msg);
+                });
+            }
         });
-      }
-    });
-  }
+    }
 
-  statusChangeEvent(event: MatSelectChange) {
-    this.ticketService.postStatusChange(this.ticket.id, event.value)
-      .subscribe((result) => {
-        this.snackBar.open('Status Changed', 'Ok', {
-          duration: 2000,
+    statusChange(status: string) {
+        this.ticketService.postStatusChange(this.ticket.id, status)
+            .subscribe((result) => {
+                this.snackBar.open('Status Changed to ' + status, 'Ok', {
+                    duration: 2000,
+                });
+            });
+    }
+
+    statusChangeEvent(event: MatSelectChange) {
+        this.ticketService.postStatusChange(this.ticket.id, event.value)
+            .subscribe((result) => {
+                this.snackBar.open('Status Changed', 'Ok', {
+                    duration: 2000,
+                });
+            });
+    }
+
+    prioritiesChangeEvent(event: MatSelectChange) {
+        this.ticketService.postPriorityChange(this.ticket.id, event.value)
+            .subscribe((result) => {
+                this.snackBar.open('Priority Changed', 'Ok', {
+                    duration: 2000,
+                });
+            });
+    }
+
+    ShowChoiceError() {
+        this.snackBar.open('Vælg enten Intern eller Ekstern', 'Ok', {
+            duration: 2500,
         });
-      });
-  }
+    }
 
-  prioritiesChangeEvent(event: MatSelectChange) {
-    this.ticketService.postPriorityChange(this.ticket.id, event.value)
-      .subscribe((result) => {
-        this.snackBar.open('Priority Changed', 'Ok', {
-          duration: 2000,
-        });
-      });
-  }
-
-  ShowChoiceError() {
-    this.snackBar.open('Vælg enten Intern eller Ekstern', 'Ok', {
-      duration: 2500,
-    });
-  }
-
-  goToLatestsAnswer() {
-    this.el.nativeElement.scrollIntoView({ behavior: 'smooth' });
-    this.el.nativeElement.focus();
-  }
+    goToLatestsAnswer() {
+        this.el.nativeElement.scrollIntoView({ behavior: 'smooth' });
+        this.el.nativeElement.focus();
+    }
 }
