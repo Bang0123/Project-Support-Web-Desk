@@ -23,6 +23,14 @@ export class SingleTicketPage {
         return element(by.css('div[name="messagedir"] h3')).isDisplayed();
     }
 
+    testChangeStatus() {
+        element(by.cssContainingText('mat-option span', 'Igang')).click();
+    }
+
+    testChangePriority() {
+        element(by.cssContainingText('mat-option span', 'Normal')).click();
+    }
+
     getTicketAnswerFormPresent() {
         return element(by.css('div[name="answerinputs"]')).isDisplayed();
     }

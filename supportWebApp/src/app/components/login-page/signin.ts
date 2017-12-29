@@ -38,7 +38,7 @@ export class Signin {
         this.router.navigate([redirect]);
       }, () => {
         this.snackBar.open('login failed.', 'Ok', {
-          duration: 2500,
+            duration: 2500,
         });
         this.loading.next(false);
       })

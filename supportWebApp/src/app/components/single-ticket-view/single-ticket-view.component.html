@@ -19,7 +19,7 @@
       <p name="id">Ticket Id: {{ ticket.id }}</p>
       <p name="status">Status:
         <mat-form-field class="select-width">
-          <mat-select [(value)]="ticket.status" (change)="statusChangeEvent($event)">
+          <mat-select name="status" [(value)]="ticket.status" (change)="statusChangeEvent($event)">
             <mat-option *ngFor="let status of statuses" [value]="status">
               {{ status }}
             </mat-option>
@@ -28,7 +28,7 @@
       </p>
       <p name="priority">Prioritet:
         <mat-form-field class="select-width">
-          <mat-select [(value)]="ticket.priority" (change)="prioritiesChangeEvent($event)">
+          <mat-select name="priority" [(value)]="ticket.priority" (change)="prioritiesChangeEvent($event)">
             <mat-option *ngFor="let priority of priorities" [value]="priority">
               {{ priority }}
             </mat-option>
