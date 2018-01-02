@@ -168,7 +168,6 @@ namespace SupportWebDesk.Controllers
         public async Task<IActionResult> GetTicketMessages([FromRoute] int id)
         {
             var ticket = await _context.Tickets.FindAsync(id);
-
             if (ticket == null)
             {
                 return BadRequest(new { Error = "Ticket id doesnt exist" });
@@ -185,11 +184,11 @@ namespace SupportWebDesk.Controllers
         public async Task<IActionResult> PostChangeTicketStatus([FromBody] TicketStatusChangeViewModel change)
         {
             var ticket = await _context.Tickets.FindAsync(change.TicketId);
-            var old = ticket.Status;
             if (ticket == null)
             {
                 return BadRequest(new { Error = "Ticket id doesnt exist" });
             }
+            var old = ticket.Status;
             ticket.SetNewStatus(change.Status);
             await _context.SaveChangesAsync();
             return Ok(new { id = ticket.Id, newStatus = ticket.Status, oldStatus = old });
@@ -203,11 +202,11 @@ namespace SupportWebDesk.Controllers
         public async Task<IActionResult> PostChangeTicketPriority([FromBody] TicketPriorityChangeViewModel change)
         {
             var ticket = await _context.Tickets.FindAsync(change.TicketId);
-            var old = ticket.Priority;
             if (ticket == null)
             {
                 return BadRequest(new { Error = "Ticket id doesnt exist" });
             }
+            var old = ticket.Priority;
             ticket.SetNewPriority(change.Priority);
             await _context.SaveChangesAsync();
             return Ok(new { id = ticket.Id, newPriority = ticket.Status, oldPriority = old });
@@ -293,101 +292,6 @@ namespace SupportWebDesk.Controllers
                 allTickets.Add(newTicket);
             }
             return allTickets;
-        }
-
-        // GET: api/Tickets/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetTicket([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var ticket = await _context.Tickets.SingleOrDefaultAsync(m => m.Id == id);
-
-            if (ticket == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(ticket);
-        }
-
-        // PUT: api/Tickets/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTicket([FromRoute] int id, [FromBody] Ticket ticket)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != ticket.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(ticket).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TicketExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Tickets
-        [HttpPost]
-        public async Task<IActionResult> PostTicket([FromBody] Ticket ticket)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            _context.Tickets.Add(ticket);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetTicket", new { id = ticket.Id }, ticket);
-        }
-
-        // DELETE: api/Tickets/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTicket([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var ticket = await _context.Tickets.SingleOrDefaultAsync(m => m.Id == id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
-
-            _context.Tickets.Remove(ticket);
-            await _context.SaveChangesAsync();
-
-            return Ok(ticket);
-        }
-
-        private bool TicketExists(int id)
-        {
-            return _context.Tickets.Any(e => e.Id == id);
         }
     }
 }
