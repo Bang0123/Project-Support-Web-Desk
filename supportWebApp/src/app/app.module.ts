@@ -46,13 +46,13 @@ import { SharedModule } from './modules/shared/shared.module';
     BrowserAnimationsModule,
     SharedModule.forRoot(),
     RouterModule.forRoot([
-      { path: '', redirectTo: 'login', pathMatch: 'full', canActivate: [AuthGuard] },
+        { path: '', redirectTo: 'login', pathMatch: 'full', canActivate: [AuthGuard]},
       { path: 'login', component: LoginPageComponent },
       { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
       { path: 'tickets', component: TicketViewComponent, canActivate: [AuthGuard] },
       { path: 'ticket', component: SingleTicketViewComponent, canActivate: [AuthGuard] },
       { path: 'search', component: SearchViewComponent, canActivate: [AuthGuard] },
-      { path: '**', redirectTo: 'login' }
+      { path: '**', redirectTo: 'home',  canActivate: [AuthGuard]}
     ])
   ],
   providers: [

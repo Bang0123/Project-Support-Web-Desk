@@ -29,7 +29,7 @@
         </li>
         <li [routerLinkActive]="['link-active']" *ngIf="signedIn | async">
           <a [routerLink]="['/search']" name="search">
-            <span class='glyphicon glyphicon-search'></span> Søg
+            <span class='glyphicon glyphicon-search'></span> Søg efter tickets
           </a>
         </li>
         <li [routerLinkActive]="['link-active']" *ngIf="(signedIn | async) === false">

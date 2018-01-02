@@ -114,17 +114,17 @@ namespace SupportWebDesk.Controllers
             {
                 ticket.Assignee = await _userManager.FindByNameAsync(message.Author);
             }
+            var previous = ticket.Status;
             ticket.Status = Ticket.STATUS_ONGOING;
             await _context.SaveChangesAsync();
             if (message.IsNote)
             {
                 return CreatedAtAction("GetMessage", new { id = message.Id }, message);
             }
-            return await MailMessage(message, ticket);
-
+            return await MailMessage(message, ticket, previous);
         }
 
-        private async Task<IActionResult> MailMessage(Message message, Ticket ticket)
+        private async Task<IActionResult> MailMessage(Message message, Ticket ticket, string previousStatus)
         {
             var mime = new MimeMessage();
             mime.From.Add(new MailboxAddress($"Support Web Desk: {ticket.Assignee.FirstName}", ticket.Assignee.Email));
@@ -146,7 +146,7 @@ namespace SupportWebDesk.Controllers
             {
                 ticket.Assignee = null;
                 _context.Messages.Remove(message);
-                ticket.Status = Ticket.STATUS_OPEN;
+                ticket.Status = previousStatus;
                 await _context.SaveChangesAsync();
                 return BadRequest(new { Error = "Couldnt send Email\nStatus remain 'Open'" });
             }
