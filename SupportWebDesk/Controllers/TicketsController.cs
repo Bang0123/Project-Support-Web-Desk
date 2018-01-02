@@ -181,7 +181,9 @@ namespace SupportWebDesk.Controllers
         /// </summary>
         /// <returns>Returns result if status changed</returns>
         [HttpPost("status")]
-        public async Task<IActionResult> PostChangeTicketStatus([FromBody] TicketStatusChangeViewModel change)
+        public async Task<IActionResult> PostChangeTicketStatus(
+            [FromBody] TicketStatusChangeViewModel change
+            )
         {
             var ticket = await _context.Tickets.FindAsync(change.TicketId);
             if (ticket == null)
@@ -199,7 +201,9 @@ namespace SupportWebDesk.Controllers
         /// </summary>
         /// <returns>Returns result if priority changed</returns>
         [HttpPost("priority")]
-        public async Task<IActionResult> PostChangeTicketPriority([FromBody] TicketPriorityChangeViewModel change)
+        public async Task<IActionResult> PostChangeTicketPriority(
+            [FromBody] TicketPriorityChangeViewModel change
+            )
         {
             var ticket = await _context.Tickets.FindAsync(change.TicketId);
             if (ticket == null)
