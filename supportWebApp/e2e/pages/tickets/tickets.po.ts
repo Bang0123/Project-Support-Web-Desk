@@ -1,20 +1,23 @@
 import { browser, by, element } from 'protractor';
-
 export class TicketsPage {
     getOpenTicketsTextPresent() {
-        return element(by.css('div[name="openticks"] h3')).isDisplayed();
+        return element(by.css('div[name="openticks"] h3'))
+            .isDisplayed();
     }
 
     getOpenTicketsNumberPresent() {
-        return element(by.css('div[name="openticks"] p')).isDisplayed();
+        return element(by.css('div[name="openticks"] p'))
+            .isDisplayed();
     }
 
     getCriticalTicketsTextPresent() {
-        return element(by.css('div[name="criticalticks"] h3')).isDisplayed();
+        return element(by.css('div[name="criticalticks"] h3'))
+            .isDisplayed();
     }
 
     getCriticalTicketsNumberPresent() {
-        return element(by.css('div[name="criticalticks"] p')).isDisplayed();
+        return element(by.css('div[name="criticalticks"] p'))
+            .isDisplayed();
     }
 
     testFiltering() {

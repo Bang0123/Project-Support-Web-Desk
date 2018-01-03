@@ -24,11 +24,13 @@ export class SingleTicketPage {
     }
 
     testChangeStatus() {
-        element(by.cssContainingText('mat-option span', 'Igang')).click();
+        element(by.css('mat-select[name="status"]')).click();
+        element(by.css('mat-option[ng-reflect-value="Åben"]')).click();
     }
 
     testChangePriority() {
-        element(by.cssContainingText('mat-option span', 'Normal')).click();
+        element(by.css('mat-select[name="priority"]')).click();
+        element(by.css('mat-option[ng-reflect-value="Lav"]')).click();
     }
 
     getTicketAnswerFormPresent() {

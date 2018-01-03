@@ -23,9 +23,11 @@ export class AppPage {
 
     getSnackBarText() {
         const ec = browser.ExpectedConditions;
-        return browser.wait(ec.visibilityOf(element(by.css('simple-snack-bar'))), 10000)
+        return browser.wait(ec.visibilityOf(element(by.css('simple-snack-bar'))), 15000)
             .then(() => {
-                return element(by.css('simple-snack-bar')).getText();
+                const txt = element(by.css('simple-snack-bar')).getText();
+                element(by.css('simple-snack-bar button')).click();
+                return txt;
             }, () => {
                 return null;
             });

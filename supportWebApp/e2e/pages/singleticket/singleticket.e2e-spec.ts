@@ -52,15 +52,15 @@ describe('Support Web Desk singleticket view test', () => {
         expect(singlepage.getTicketAnswerFormPresent()).toBeTruthy();
     });
 
-    // it('should render snackbar popup on status change', () => {
-    //     singlepage.testChangeStatus();
-    //     expect(apppage.getSnackBarText()).toContain('Status Changed');
-    // });
+    it('should render snackbar popup on status change', () => {
+        singlepage.testChangeStatus();
+        expect(apppage.getSnackBarText()).toContain('Status Changed');
+    });
 
-    // it('should render snackbar popup on priority change', () => {
-    //     singlepage.testChangePriority();
-    //     expect(apppage.getSnackBarText()).toContain('Priority Changed');
-    // });
+    it('should render snackbar popup on priority change', () => {
+        singlepage.testChangePriority();
+        expect(apppage.getSnackBarText()).toContain('Priority Changed');
+    });
 
     it('Should send intern note and see it afterwards', () => {
         expect(singlepage.testAnswerFlowIntern()).toBeTruthy();
