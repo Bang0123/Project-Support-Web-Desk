@@ -2,96 +2,145 @@ user story 4
 
 actor Bruger
 title User story 4
-Bruger->Angular frontend:Navigere til alle tickets view
-Angular frontend->backend:GetTickets
-database Database
-backend->Database:query all tickets
-backend<--Database:return tickets
-Angular frontend<--backend:return result
+participant TicketView Component
+participant TicketsController
 
-Bruger->Angular frontend:Ændrer sortering
-Bruger<--Angular frontend:Sortering ændret
-Bruger->Angular frontend:Se en ticket
-Bruger<-Angular frontend:Navigere til den enkle ticket
+Bruger->TicketView Component:Navigere til alle tickets view
+activate TicketView Component
+TicketView Component->TicketsController:GetTickets()
+activate TicketsController
+database Database
+TicketsController->Database:query all tickets
+activate Database
+TicketsController<--Database:return tickets
+deactivate Database
+TicketView Component<--TicketsController:return result
+deactivate TicketsController
+TicketView Component->Bruger:Vis tickets i datatabel
+deactivate TicketView Component
+
+Bruger->TicketView Component:Ændrer sortering
+activate TicketView Component
+Bruger<--TicketView Component:Sortering ændret
+deactivate TicketView Component
+Bruger->TicketView Component:Se en ticket
+activate TicketView Component
+Bruger<-TicketView Component:Navigere til den valgte ticket
+deactivate TicketView Component
+
 
 user story 1
 
 actor Bruger
 title User story 1
-Bruger->Angular frontend:initialisere login process
-Angular frontend->backend:Login using\nOauth framework
+participant Login Component
+participant Home Component
+participant Identity server
+participant TicketsController
 
-backend->Identity framework:Framework handle\nOauth request
-backend<--Identity framework:return access token
-Angular frontend<--backend:return result
-
-Bruger<-Angular frontend:omdiriger til startside
-group Now Authorized with token
-Angular frontend->backend:GetAssignedTicekts
 database Database
-backend->Database:query assigned tickets
-backend<-Database:return tickets
-Angular frontend<-backend:return result
+Bruger->Login Component:initialisere login process
+activate Login Component
+Login Component->Identity server:Login using\nOauth framework
+activate Identity server
+Login Component<--Identity server:return access token
+deactivate Identity server
+Bruger<-Login Component:omdiriger til Home Component
+deactivate Login Component
+group Now Authorized with token
+Home Component->TicketsController:GetAssigneesTickets(username)
+activate Home Component
+activate TicketsController
+TicketsController->Database:query assigned tickets
+activate Database
+TicketsController<--Database:return tickets
+deactivate Database
+Home Component<--TicketsController:return result
+deactivate TicketsController
+deactivate Home Component
 end 
 
 user story 7
 
 actor Bruger
 title User story 7
-Bruger->Angular frontend:initialiserer send mail process
-Angular frontend->backend:POST new message
-
-backend->SMTP server:Send message\nas email
-backend<-SMTP server:Message sent
+participant SingleTicket View component
+participant MessagesController
+participant SMTP server
 database Database
-backend->Database:Save message
-backend<-Database:OK
-
-Angular frontend<--backend:return result
-
-Bruger<--Angular frontend:Vis ny besked på\npågældende ticket
+Bruger->SingleTicket View component:svarer ticket med mail
+activate SingleTicket View component
+SingleTicket View component->MessagesController:PostMessage(message)
+activate MessagesController
+MessagesController->SMTP server:SendEmailAsync(mail)
+activate SMTP server
+MessagesController<--SMTP server:mail sent
+deactivate SMTP server
+MessagesController->Database:Save message
+activate Database
+MessagesController<--Database:OK
+deactivate Database
+SingleTicket View component<--MessagesController:return result
+deactivate MessagesController
+Bruger<--SingleTicket View component:Vis ny besked på\npågældende ticket
+deactivate SingleTicket View component
 
 user story 2
 
 actor Bruger
 title User story 2
-Bruger->Angular frontend:Skriver intern note
-Angular frontend->backend:POST new message\n{ isNote = true }
-
+participant SingleTicket View component
+participant MessagesController
 database Database
-backend->Database:Save message
-backend<-Database:OK
-
-Angular frontend<--backend:return result
-
-Bruger<--Angular frontend:Vis ny note på\npågældende ticket
+Bruger->SingleTicket View component:Skriver intern note\npå ticket
+activate SingleTicket View component
+SingleTicket View component->MessagesController:PostMessage(message)\n{ isNote = true }
+activate MessagesController
+MessagesController->Database:Save message
+activate Database
+MessagesController<--Database:OK
+deactivate Database
+SingleTicket View component<--MessagesController:return result
+deactivate MessagesController
+Bruger<--SingleTicket View component:Vis ny note på\npågældende ticket
+deactivate SingleTicket View component
 
 user story 6
 
 actor Bruger
 title User story 6
-Bruger->Angular frontend:Taster søge\nparametre
-Angular frontend->backend:GET TicketSearch
-
+participant SearchView Component
+participant TicketsController
 database Database
-backend->Database:query db
-backend<-Database:return result
-
-Angular frontend<--backend:return result
-
-Bruger<--Angular frontend:Vis search resultat 
+Bruger->SearchView Component:Taster søge\nparametre
+activate SearchView Component
+SearchView Component->TicketsController:GetSearchTickets(params ...)
+activate TicketsController
+TicketsController->Database:Search db
+activate Database
+TicketsController<--Database:return result
+deactivate Database
+SearchView Component<--TicketsController:return result
+deactivate TicketsController
+Bruger<--SearchView Component:Vis search resultat 
+deactivate SearchView Component
 
 user story 3
 
 actor Bruger
 title User story 3
-Bruger->Angular frontend:Skifter ticket status\neller prioritet
-Angular frontend->backend:PostChange(ticketid)
-
+participant SingleTicketView Component
+participant TicketsController
 database Database
-backend->Database:Update
-backend<-Database:return Ok
-
-Angular frontend<--backend:return result
-
-Bruger<--Angular frontend:Popup der bekræfter change 
+Bruger->SingleTicketView Component:Skifter ticket status
+activate SingleTicketView Component
+SingleTicketView Component->TicketsController:PostChangeTicketStatus\n(statuschangeviewmodel)
+activate TicketsController
+TicketsController->Database:Update
+activate Database
+TicketsController<--Database:return Ok
+deactivate Database
+SingleTicketView Component<--TicketsController:return result
+deactivate TicketsController
+Bruger<--SingleTicketView Component:Popup der bekræfter change 
+deactivate SingleTicketView Component
