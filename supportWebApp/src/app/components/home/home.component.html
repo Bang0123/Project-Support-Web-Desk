@@ -1,34 +1,63 @@
-<h1>Hello, world!</h1>
-<p>Welcome to your new single-page application, built with:</p>
-<ul>
-  <li>
-    <a href='https://get.asp.net/'>ASP.NET Core</a> and
-    <a href='https://msdn.microsoft.com/en-us/library/67ef8sbd.aspx'>C#</a> for cross-platform server-side code</li>
-  <li>
-    <a href='https://angular.io/'>Angular</a> and
-    <a href='http://www.typescriptlang.org/'>TypeScript</a> for client-side code</li>
-  <li>
-    <a href='https://webpack.github.io/'>Webpack</a> for building and bundling client-side resources</li>
-  <li>
-    <a href='http://getbootstrap.com/'>Bootstrap</a> for layout and styling</li>
-</ul>
-<p>To help you get started, we've also set up:</p>
-<ul>
-  <li>
-    <strong>Client-side navigation</strong>. For example, click
-    <em>Counter</em> then
-    <em>Back</em> to return here.</li>
-  <li>
-    <strong>Server-side prerendering</strong>. For faster initial loading and improved SEO, your Angular app is prerendered on the
-    server. The resulting HTML is then transferred to the browser where a client-side copy of the app takes over.</li>
-  <li>
-    <strong>Webpack dev middleware</strong>. In development mode, there's no need to run the
-    <code>webpack</code> build tool. Your client-side resources are dynamically built on demand. Updates are available as soon as you modify
-    any file.</li>
-  <li>
-    <strong>Hot module replacement</strong>. In development mode, you don't even need to reload the page after making most changes.
-    Within seconds of saving changes to files, your Angular app will be rebuilt and a new instance injected is into the page.</li>
-  <li>
-    <strong>Efficient production builds</strong>. In production mode, development-time features are disabled, and the
-    <code>webpack</code> build tool produces minified static CSS and JavaScript files.</li>
-</ul>
+<h1>Startside</h1>
+<p><strong>Velkommen {{ user.firstName }}</strong></p>
+<div class="row">
+  <div class="col-sm-5" name="newticks">
+    <h3 class="text-center">Nye Tickets</h3>
+    <p class="lead text-center">{{ newTickets }}</p>
+  </div>
+  <div class="col-sm-5" name="yourticks">
+    <h3 class="text-center">Dine Tickets</h3>
+    <p class="lead text-center">{{ usersTickets }}</p>
+  </div>
+</div>
+<p *ngIf="dataSource.data.length < 1" name="loading">
+  <em>Loading...</em>
+</p>
+<div>
+  <hr>
+  <h2>Dine Tickets</h2>
+  <div class="example-header">
+    <mat-form-field>
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter dine tickets">
+    </mat-form-field>
+  </div>
+  <div class="example-container mat-elevation-z8">
+    <mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.status}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="priority">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Prioritet </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.priority}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="subject">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Overskrift </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.subject}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="requester">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Anmoder </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.requester}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="assignee">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Agent </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.assignee.userName}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="updatedAt">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Sidst opdateret </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.updatedAt | date:'HH:mm dd-MM-yyyy'}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="gototick">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Se Ticket </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <button (click)="goToTicket(row)" [routerLink]="['/ticket']" mat-raised-button color="primary">Se Ticket</button>
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;">
+      </mat-row>
+    </mat-table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+  </div>
+  <hr>
+</div>

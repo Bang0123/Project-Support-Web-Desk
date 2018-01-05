@@ -15,11 +15,24 @@ export class DataService {
       status: '',
       priority: '',
       subject: '',
-      requester: { userName: '', email: '' },
+      requester: '',
       assignee: { userName: '', email: '' },
-      createdAt: '',
-      updatedAt: '',
-      body: ''
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      body: '',
+      messages: [
+        {
+          body: '',
+          updatedAt: new Date(),
+          createdAt: new Date(),
+          author: '',
+          sender: '',
+          senderEmail: '',
+          id: -1,
+          ticketId: -1,
+          isNote: false
+        }
+      ]
     };
     this.ticketSource = new BehaviorSubject<Ticket>(tick);
     this.currentTicket = this.ticketSource.asObservable();

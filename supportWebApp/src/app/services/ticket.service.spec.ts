@@ -1,11 +1,17 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { TicketService } from './ticket.service';
+import { TestModuleModule } from '../modules/test-module/test-module.module';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('TicketService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TicketService]
+      providers: [TicketService],
+      imports: [
+        TestModuleModule
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     });
   });
 

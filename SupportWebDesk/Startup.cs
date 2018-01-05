@@ -1,7 +1,6 @@
 using System;
-using System.IO;
-using System.Text;
 using Hangfire;
+using Hangfire.Storage;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,20 +10,15 @@ using Microsoft.Extensions.DependencyInjection;
 using SupportWebDesk.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.PlatformAbstractions;
-using Microsoft.IdentityModel.Tokens;
 using SupportWebDesk.Auth;
 using SupportWebDesk.Data.Jobs;
 using SupportWebDesk.Helpers;
 using SupportWebDesk.Helpers.Services;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace SupportWebDesk
 {
     public class Startup
     {
-        private readonly SymmetricSecurityKey _signingKey;
-
         public Startup(IHostingEnvironment env, IConfiguration configuration)
         {
             var builder = new ConfigurationBuilder()
@@ -32,12 +26,10 @@ namespace SupportWebDesk
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
-            Appsettings = builder.Build();
+            Config.Appsettings = builder.Build();
             Configuration = configuration;
-            _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Appsettings.GetConnectionString("SigningKey")));
         }
 
-        public static IConfiguration Appsettings { get; set; }
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -45,28 +37,35 @@ namespace SupportWebDesk
         {
             // mvs hangfire and dbcontext
             services.AddMvc();
-            services.AddHangfire(x => x.UseSqlServerStorage(Appsettings.GetConnectionString("SupportWebDeskContext")));
+            services.AddHangfire(x => x.UseSqlServerStorage(Config.Appsettings.GetConnectionString(Config.DB_CONTEXT)));
             services.AddDbContext<WebDeskContext>(options =>
-                options.UseSqlServer(Appsettings.GetConnectionString("SupportWebDeskContext")));
+                options.UseSqlServer(Config.Appsettings.GetConnectionString(Config.DB_CONTEXT)));
             // Transient services
-            services.AddTransient<EmailPullerJob>();
+            services.AddTransient<EmailServiceJob>();
+            services.AddTransient<TicketServiceJob>();
+
+            // Email registered for dependency injection
             services.AddTransient<IEmailSender, EmailSender>();
+
             services.AddTransient<IDbInitializer, DbInitializer>();
 
-            // Register the Swagger generator, defining one or more Swagger documents
-            services.AddSwaggerGen(c =>
+            services.AddCors(options =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "API", Version = "v1" });
-                // Set the comments path for the Swagger JSON and UI.
-                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-                var xmlPath = Path.Combine(basePath, "SupportWebDesk.xml");
-                c.IncludeXmlComments(xmlPath);
+                options.AddPolicy("CorsPol", builder =>
+                {
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                    builder.AllowCredentials();
+                    builder.Build();
+                });
             });
 
             // begin identity
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<WebDeskContext>()
                 .AddDefaultTokenProviders();
+
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -84,11 +83,11 @@ namespace SupportWebDesk
             services.AddAuthorization(options =>
             {
                 // Policy for dashboard: only administrator role.
-                options.AddPolicy("Manage Accounts", policy => policy.RequireRole("administrator"));
+                options.AddPolicy(Config.POLICY_ADMIN, policy => policy.RequireRole(Config.ROLE_ADMIN));
                 // Policy for resources: user or administrator roles. 
-                options.AddPolicy("Access Resources", policy => policy.RequireRole("administrator", "user"));
+                options.AddPolicy(Config.POLICY_USER, policy => policy.RequireRole(Config.ROLE_ADMIN, Config.ROLE_USER));
             });
-            
+
             // Adds IdentityServer.
             services.AddIdentityServer()
                 // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
@@ -106,33 +105,37 @@ namespace SupportWebDesk
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
-                    options.Authority = "http://localhost:5000/";
+                    options.Authority = Config.AUTHORITY;
                     options.RequireHttpsMetadata = false;
 
-                    options.ApiName = "SupportWebDeskAPI";
+                    options.ApiName = Config.API_NAME;
                 });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, 
+        public void Configure(IApplicationBuilder app,
             IHostingEnvironment env,
             ILoggerFactory loggerFactory,
             IServiceProvider serviceProvider,
-            WebDeskContext ctx)
+            WebDeskContext ctx,
+            IEmailSender emailer,
+            IDbInitializer dbInitializer)
         {
-            loggerFactory.AddConsole(Appsettings.GetSection("Logging"));
+            loggerFactory.AddConsole(Config.Appsettings.GetSection("Logging"));
             loggerFactory.AddDebug();
-
             ctx.Database.EnsureCreated();
+            dbInitializer.Initialize(ctx);
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseCors(builder =>
                 {
-                    builder.AllowAnyOrigin();
                     builder.AllowAnyHeader();
                     builder.AllowAnyMethod();
+                    builder.AllowAnyOrigin();
+                    builder.AllowCredentials();
+                    builder.Build();
                 });
             }
             else
@@ -144,40 +147,23 @@ namespace SupportWebDesk
             app.UseDefaultFiles();
             app.UseStaticFiles();
             GlobalConfiguration.Configuration
-                .UseActivator(new HangfireActivator(serviceProvider));
+                .UseActivator(activator: new HangfireActivator(serviceProvider));
 
             app.UseIdentityServer();
+
             app.UseHangfireServer();
             app.UseHangfireDashboard();
-            
-            RecurringJob.AddOrUpdate(()=> new EmailPullerJob(ctx).GetMailsAndSaveToDb(env.IsProduction()), Cron.MinuteInterval(5));
 
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
-            });
-
-            // Router on the server must match the router on the client (see app.routing.module.ts) to use PathLocationStrategy.
-            //var appRoutes = new[] {
-            //    "/home",
-            //    "/account/signin",
-            //    "/account/signup",
-            //    "/resources",
-            //    "/dashboard"
-            //};
-            //app.Use(async (context, next) =>
-            //{
-            //    if (context.Request.Path.HasValue && appRoutes.Contains(context.Request.Path.Value))
-            //    {
-            //        context.Request.Path = new PathString("/");
-            //    }
-
-            //    await next();
-            //});
+            RecurringJob.AddOrUpdate(
+                    recurringJobId: "emailJob",
+                    methodCall: () => new EmailServiceJob(ctx).Invoke(true),
+                    cronExpression: Cron.MinuteInterval(5)
+                );
+            RecurringJob.AddOrUpdate(
+                    recurringJobId: "ticketJob",
+                    methodCall: () => new TicketServiceJob(ctx, emailer).Invoke(),
+                    cronExpression: Cron.MinuteInterval(5)
+                );
 
             app.UseMvc(routes =>
             {

@@ -1,9 +1,14 @@
 ﻿using System.Threading.Tasks;
+using MimeKit;
 
 namespace SupportWebDesk.Helpers.Services
 {
     public interface IEmailSender
     {
-        Task SendEmailAsync(string email, string subject, string message);
+        Task AutoReply(string email, string requester, int ticketId, string subject);
+        Task<bool> SendEmailAsync(MimeMessage message);
+        string GetFormattedSubject(int ticketId, int msgId, string subject);
+        string AttachSignature(string body, string signature);
+        string Formatbody(string body);
     }
 }

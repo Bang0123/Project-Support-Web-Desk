@@ -173,6 +173,8 @@ namespace SupportWebDesk.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
+                    b.Property<string>("EmailSignature");
+
                     b.Property<string>("FirstName");
 
                     b.Property<bool>("IsEnabled");
@@ -230,15 +232,21 @@ namespace SupportWebDesk.Migrations
 
                     b.Property<string>("MessageId");
 
+                    b.Property<bool>("Processed");
+
                     b.Property<string>("Sender");
 
-                    b.Property<string>("Subject");
+                    b.Property<string>("SenderEmail");
 
-                    b.Property<bool>("TicketCreated");
+                    b.Property<string>("Subject");
 
                     b.Property<DateTime>("UpdatedAt");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MessageId")
+                        .IsUnique()
+                        .HasFilter("[MessageId] IS NOT NULL");
 
                     b.ToTable("Mails");
                 });
@@ -248,55 +256,27 @@ namespace SupportWebDesk.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("AuthorId");
+                    b.Property<string>("Author");
 
                     b.Property<string>("Body");
 
                     b.Property<DateTime>("CreatedAt");
 
+                    b.Property<bool>("IsNote");
+
                     b.Property<string>("Sender");
 
-                    b.Property<string>("Subject");
+                    b.Property<string>("SenderEmail");
 
                     b.Property<int?>("TicketId");
 
                     b.Property<DateTime>("UpdatedAt");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
 
                     b.HasIndex("TicketId");
 
                     b.ToTable("Messages");
-                });
-
-            modelBuilder.Entity("SupportWebDesk.Data.Models.Note", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("AuthorId");
-
-                    b.Property<string>("Body");
-
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("Sender");
-
-                    b.Property<string>("Subject");
-
-                    b.Property<int?>("TicketId");
-
-                    b.Property<DateTime>("UpdatedAt");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("TicketId");
-
-                    b.ToTable("Notes");
                 });
 
             modelBuilder.Entity("SupportWebDesk.Data.Models.Ticket", b =>
@@ -312,7 +292,9 @@ namespace SupportWebDesk.Migrations
 
                     b.Property<string>("Priority");
 
-                    b.Property<string>("RequesterId");
+                    b.Property<string>("Requester");
+
+                    b.Property<string>("RequesterMail");
 
                     b.Property<string>("Status");
 
@@ -323,8 +305,6 @@ namespace SupportWebDesk.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AssigneeId");
-
-                    b.HasIndex("RequesterId");
 
                     b.ToTable("Tickets");
                 });
@@ -392,23 +372,8 @@ namespace SupportWebDesk.Migrations
 
             modelBuilder.Entity("SupportWebDesk.Data.Models.Message", b =>
                 {
-                    b.HasOne("SupportWebDesk.Auth.User", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId");
-
                     b.HasOne("SupportWebDesk.Data.Models.Ticket")
                         .WithMany("Messages")
-                        .HasForeignKey("TicketId");
-                });
-
-            modelBuilder.Entity("SupportWebDesk.Data.Models.Note", b =>
-                {
-                    b.HasOne("SupportWebDesk.Auth.User", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId");
-
-                    b.HasOne("SupportWebDesk.Data.Models.Ticket")
-                        .WithMany("Notes")
                         .HasForeignKey("TicketId");
                 });
 
@@ -417,10 +382,6 @@ namespace SupportWebDesk.Migrations
                     b.HasOne("SupportWebDesk.Auth.User", "Assignee")
                         .WithMany()
                         .HasForeignKey("AssigneeId");
-
-                    b.HasOne("SupportWebDesk.Auth.User", "Requester")
-                        .WithMany()
-                        .HasForeignKey("RequesterId");
                 });
 #pragma warning restore 612, 618
         }

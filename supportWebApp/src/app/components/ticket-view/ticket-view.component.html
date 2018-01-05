@@ -1,22 +1,22 @@
 <h1>Se Alle Tickets</h1>
 <div class="row">
-  <div class="col-sm-5">
+  <div class="col-sm-5" name="openticks">
     <h3 class="text-center">Åbne tickets Lige nu</h3>
     <p class="lead text-center">{{ openTickets }}</p>
   </div>
-  <div class="col-sm-5">
+  <div class="col-sm-5" name="criticalticks">
     <h3 class="text-center">Kritiske tickets</h3>
     <p class="lead text-center">{{ criticalTickets }}</p>
   </div>
 </div>
-<p *ngIf="!dataSource.data">
+<p *ngIf="dataSource.data.length < 1" name="loading">
   <em>Loading...</em>
 </p>
 <div>
 <hr>
   <div class="example-header">
     <mat-form-field>
-      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter alle">
     </mat-form-field>
   </div>
   <div class="example-container mat-elevation-z8">
@@ -35,7 +35,7 @@
       </ng-container>
       <ng-container matColumnDef="requester">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Anmoder </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.requester.userName}} </mat-cell>
+        <mat-cell *matCellDef="let row"> {{row.requester}} </mat-cell>
       </ng-container>
       <ng-container matColumnDef="assignee">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Agent </mat-header-cell>

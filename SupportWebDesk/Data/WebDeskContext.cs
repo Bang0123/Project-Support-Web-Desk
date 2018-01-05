@@ -14,7 +14,6 @@ namespace SupportWebDesk.Data
 
         public DbSet<Mail> Mails { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
-        public DbSet<Note> Notes { get; set; }
         public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -23,8 +22,8 @@ namespace SupportWebDesk.Data
 
             modelBuilder.Entity<Mail>().ToTable("Mails");
             modelBuilder.Entity<Ticket>().ToTable("Tickets");
-            modelBuilder.Entity<Note>().ToTable("Notes");
             modelBuilder.Entity<Message>().ToTable("Messages");
+            modelBuilder.Entity<Mail>().HasIndex(mail => mail.MessageId).IsUnique();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

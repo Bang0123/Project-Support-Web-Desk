@@ -8,13 +8,14 @@ namespace SupportWebDesk.Data.Models
 {
     public class Message
     {
-        public String Subject { get; set; }
         public String Body { get; set; }
-        public String Sender { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime CreatedAt { get; set; }
-        public User Author { get; set; }
+        public string Author { get; set; }
+        public string Sender { get; set; }
+        public string SenderEmail { get; set; }
         public int Id { get; set; }
         public int? TicketId { get; set; }
+        public bool IsNote { get; set; }
     }
 }

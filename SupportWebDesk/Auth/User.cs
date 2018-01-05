@@ -13,6 +13,7 @@ namespace SupportWebDesk.Auth
         public string UpdatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
+        public String EmailSignature { get; set; }
 
         /// <summary>
         /// Navigation property for the roles this user belongs to.

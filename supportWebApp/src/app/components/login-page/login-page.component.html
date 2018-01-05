@@ -1,0 +1,20 @@
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 center-login">
+  <form class="form-signin" name="form" #f="ngForm" (ngSubmit)="f.form.valid && signin()" novalidate>
+    <h2 class="form-signin-heading">Login</h2>
+    <label for="inputEmail" class="sr-only">Email address</label>
+    <input type="email" id="inputEmail" [(ngModel)]="model.username" class="form-control" name="username" #username="ngModel"
+      placeholder="email" required autofocus>
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" [(ngModel)]="model.password" class="form-control" name="password" #password="ngModel"
+      placeholder="password" required>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" value="remember-me"> Remember me
+      </label>
+    </div>
+    <button mat-raised-button color="primary" class="btn btn-lg btn-block" type="submit">Login</button>
+    <div *ngIf="working" class="progress-comp">
+      <mat-spinner class="progress-comp"></mat-spinner>
+    </div>
+  </form>
+</div>

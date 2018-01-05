@@ -1,0 +1,97 @@
+<h1>Søg efter tickets</h1>
+<hr>
+<form>
+  <div class="row">
+    <div class="col-md-2">
+      <mat-form-field>
+      <input matInput [(ngModel)]="model.ticketid" placeholder="Ticket id" name="ticketid" />
+      </mat-form-field>
+      <mat-form-field>
+      <input matInput [(ngModel)]="model.requester" name="requester" placeholder="Anmoder" />
+    </mat-form-field> </div>
+    <div class="col-md-2">
+      <mat-form-field>
+      <input matInput [(ngModel)]="model.subject" name="subject" placeholder="Overskrift" />
+      </mat-form-field>
+      <mat-form-field>
+      <input matInput [(ngModel)]="model.body" name="body" placeholder="Fri text" />
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field>
+      <mat-select placeholder="Prioritet" [(ngModel)]="model.priority" name="priority">
+        <mat-option *ngFor="let priority of priorities" [value]="priority">
+          {{ priority }}
+        </mat-option>
+      </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+      <input matInput [(ngModel)]="model.assignee" name="assignee" placeholder="Ansvarshavende" />
+    </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field>
+        <input matInput [matDatepicker]="picker1" [(ngModel)]="model.datefrom" name="datefrom" [formControl]="datefrom" placeholder="Dato fra" />
+        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput [matDatepicker]="picker2" [(ngModel)]="model.dateto" name="dateto" [formControl]="dateto" placeholder="Dato til" />
+        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="col-md-1">
+      <button mat-raised-button (click)="search()" color="primary">Søg</button>
+    </div>
+  </div>
+</form>
+<p *ngIf="dataSource.data.length < 1" name="loading">
+  <em>Søg efter tickets</em>
+</p>
+<div>
+  <hr>
+  <div class="example-header">
+    <mat-form-field>
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter tickets">
+    </mat-form-field>
+  </div>
+  <div class="example-container mat-elevation-z8">
+    <mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.status}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="priority">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Prioritet </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.priority}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="subject">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Overskrift </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.subject}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="requester">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Anmoder </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.requester}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="assignee">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Agent </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.assignee.userName}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="updatedAt">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Sidst opdateret </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.updatedAt | date:'HH:mm dd-MM-yyyy'}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="gototick">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Se Ticket </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <button (click)="goToTicket(row)" [routerLink]="['/ticket']" mat-raised-button color="primary">Se Ticket</button>
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;">
+      </mat-row>
+    </mat-table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+  </div>
+  <hr>
