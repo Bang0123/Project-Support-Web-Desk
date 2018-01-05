@@ -1,0 +1,3 @@
+Fremlæggelse:
+Demo, arkitektur, teknisk overblik eks. klasser. individuelt kan godt blive teknisk!
+Fremlæggelse - husk fremtidig perspektivering. (Ændre ansvarlig, oprette ticket)
