@@ -75,9 +75,9 @@ import { SharedModule } from './modules/shared/shared.module';
 export class AppModule { }
 
 export function getBaseUrl() {
-  return 'http://localhost:5000';
+  // return 'http://localhost:5000';
 
-  // return document.getElementsByTagName('base')[0].href;
+   return document.getElementsByTagName('base')[0].href;
 }
 // export function initOAuth(oAuthConfig: OAuthConfig): Function {
 //   return () => oAuthConfig.load();

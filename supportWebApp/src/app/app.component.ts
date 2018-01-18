@@ -21,12 +21,14 @@ export class AppComponent implements OnInit {
         this.oAuthService.clientId = 'SupportWebDesk';
         this.oAuthService.scope = 'openid offline_access WebAPI profile roles';
         this.oAuthService.setStorage(this.authenticationService.storage);
-        this.oAuthService.issuer = this.baseUrl;
+        // this.oAuthService.issuer = this.baseUrl;
+        // this.oAuthService.issuer = 'http://localhost:5000';
+        this.oAuthService.issuer = 'http://supportwebdeskdemo.azurewebsites.net';
         this.oAuthService.oidc = false;
         this.oAuthService.requireHttps = false;
 
         // Loads Discovery Document.
-        const url = this.baseUrl + '/.well-known/openid-configuration';
+        const url = this.baseUrl + '.well-known/openid-configuration';
         this.loadDiscovery(url);
         this.initServices();
     }

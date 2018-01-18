@@ -11,7 +11,8 @@ namespace SupportWebDesk
     public class Config
     {
         public const string DB_CONTEXT = "SupportWebDeskContext";
-        public const string AUTHORITY = "http://localhost:5000/";
+        //public const string AUTHORITY = "http://localhost:5000/";
+        public const string AUTHORITY = "http://supportwebdeskdemo.azurewebsites.net/";
         public const string API_NAME = "WebAPI";
         public const string CLIENT_ID = "SupportWebDesk";
         public const string POLICY_ADMIN = "Manage Accounts";
@@ -74,7 +75,7 @@ namespace SupportWebDesk
                     RefreshTokenExpiration = TokenExpiration.Sliding,
                     AllowedCorsOrigins = new List<string>
                     {
-                        "http://localhost:4200"
+                       // "http://localhost:4200"
                     } // Only for development. Angular dev server
                 }
             };
