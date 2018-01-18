@@ -101,13 +101,13 @@ namespace SupportWebDesk
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<User>(); // IdentityServer4.AspNetIdentity.
-
+            
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
                     options.Authority = Config.AUTHORITY;
                     options.RequireHttpsMetadata = false;
-
+                    
                     options.ApiName = Config.API_NAME;
                 });
         }
