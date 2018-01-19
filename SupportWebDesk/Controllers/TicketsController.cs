@@ -45,6 +45,7 @@ namespace SupportWebDesk.Controllers
         {
             var ticks = _context.Tickets
                 .Include(ticket => ticket.Assignee)
+                .Where(ticket => ticket.Status != Ticket.STATUS_CLOSED)
                 // .Include(x=>x.Messages)
                 .OrderByDescending(x => x.UpdatedAt);
             var allTickets = new List<TicketViewModel>();
@@ -91,7 +92,7 @@ namespace SupportWebDesk.Controllers
         [HttpGet("criticalamount")]
         public async Task<IActionResult> GetCriticalTicketAmount()
         {
-            var amount = await _context.Tickets.CountAsync(ticket => ticket.Priority == Ticket.PRIORITY_CRITICAL);
+            var amount = await _context.Tickets.CountAsync(ticket => ticket.Priority == Ticket.PRIORITY_CRITICAL && ticket.Status != Ticket.STATUS_CLOSED);
             return Ok(amount);
         }
 
@@ -192,8 +193,9 @@ namespace SupportWebDesk.Controllers
             }
             var old = ticket.Status;
             ticket.SetNewStatus(change.Status);
+            ticket.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
-            return Ok(new { id = ticket.Id, newStatus = ticket.Status, oldStatus = old });
+            return Ok(new { id = ticket.Id, newStatus = ticket.Status, oldStatus = old, ticket.UpdatedAt });
         }
 
         /// <summary>
@@ -212,8 +214,9 @@ namespace SupportWebDesk.Controllers
             }
             var old = ticket.Priority;
             ticket.SetNewPriority(change.Priority);
+            ticket.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
-            return Ok(new { id = ticket.Id, newPriority = ticket.Status, oldPriority = old });
+            return Ok(new { id = ticket.Id, newPriority = ticket.Status, oldPriority = old,  ticket.UpdatedAt});
         }
 
 

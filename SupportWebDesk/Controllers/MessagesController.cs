@@ -55,6 +55,7 @@ namespace SupportWebDesk.Controllers
             }
             var previous = ticket.Status;
             ticket.Status = Ticket.STATUS_ONGOING;
+            ticket.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
             if (message.IsNote)
             {

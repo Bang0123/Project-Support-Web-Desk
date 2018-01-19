@@ -48,19 +48,20 @@ namespace SupportWebDesk
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddTransient<IDbInitializer, DbInitializer>();
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPol", builder =>
-                {
-                    builder.AllowAnyOrigin();
-                    builder.AllowAnyHeader();
-                    builder.AllowAnyMethod();
-                    builder.AllowCredentials();
-                    builder.Build();
-                });
-            });
-
+            //if (env.IsDevelopment())
+            //{
+            //    services.AddCors(options =>
+            //    {
+            //        options.AddPolicy("CorsPol", builder =>
+            //        {
+            //            builder.AllowAnyOrigin();
+            //            builder.AllowAnyHeader();
+            //            builder.AllowAnyMethod();
+            //            builder.AllowCredentials();
+            //            builder.Build();
+            //        });
+            //    });
+            //}
             // begin identity
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<WebDeskContext>()
@@ -101,13 +102,13 @@ namespace SupportWebDesk
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<User>(); // IdentityServer4.AspNetIdentity.
-            
+
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
                     options.Authority = Config.AUTHORITY;
                     options.RequireHttpsMetadata = false;
-                    
+
                     options.ApiName = Config.API_NAME;
                 });
         }

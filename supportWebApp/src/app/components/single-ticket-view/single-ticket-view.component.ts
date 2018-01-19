@@ -51,12 +51,14 @@ export class SingleTicketViewComponent implements OnInit, AfterViewInit {
         msg.isNote = this.isNote;
         msg.createdAt = new Date();
         msg.updatedAt = new Date();
-        this.ticketService.postMessage(msg).subscribe((result) => {
-            this.messages.push(result as Message);
+        this.ticketService.postMessage(msg).subscribe(result => {
+            const resultmsg = result as Message;
+            this.messages.push(resultmsg);
             this.ticket.assignee = this.authenticationService.getUser();
             if (this.ticket.status === 'Åben') {
                 this.statusChange(this.statuses[1]);
             }
+            this.ticket.updatedAt = new Date();
         });
     }
 
@@ -85,6 +87,7 @@ export class SingleTicketViewComponent implements OnInit, AfterViewInit {
                 this.snackBar.open('Status Changed to ' + status, 'Ok', {
                     duration: 2000,
                 });
+                this.ticket.updatedAt = new Date();
             });
     }
 
@@ -94,6 +97,7 @@ export class SingleTicketViewComponent implements OnInit, AfterViewInit {
                 this.snackBar.open('Status Changed', 'Ok', {
                     duration: 2000,
                 });
+                this.ticket.updatedAt = new Date();
             });
     }
 
@@ -103,6 +107,7 @@ export class SingleTicketViewComponent implements OnInit, AfterViewInit {
                 this.snackBar.open('Priority Changed', 'Ok', {
                     duration: 2000,
                 });
+                this.ticket.updatedAt = new Date();
             });
     }
 
