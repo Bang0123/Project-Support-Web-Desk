@@ -104,7 +104,7 @@ namespace SupportWebDesk.Controllers
         public async Task<IActionResult> GetNewAmountOfTickets()
         {
             var amount = await _context.Tickets.CountAsync(
-                ticket => DateTime.Now.Subtract(ticket.CreatedAt).Days <= Ticket.TICKET_15_DAYS_OLD
+                ticket => DateTime.Now.Subtract(ticket.CreatedAt).Days <= Ticket.TICKET_15_DAYS_OLD && ticket.Status != Ticket.STATUS_CLOSED
                 );
             return Ok(amount);
         }
@@ -216,7 +216,7 @@ namespace SupportWebDesk.Controllers
             ticket.SetNewPriority(change.Priority);
             ticket.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
-            return Ok(new { id = ticket.Id, newPriority = ticket.Status, oldPriority = old,  ticket.UpdatedAt});
+            return Ok(new { id = ticket.Id, newPriority = ticket.Status, oldPriority = old, ticket.UpdatedAt });
         }
 
 
