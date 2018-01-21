@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using MimeKit;
 
-namespace SupportWebDesk.Helpers.Services
+namespace SupportWebDesk.Services
 {
     public interface IEmailSender
     {

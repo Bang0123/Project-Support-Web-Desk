@@ -13,7 +13,7 @@ using MimeKit;
 using SupportWebDesk.Auth;
 using SupportWebDesk.Data;
 using SupportWebDesk.Data.Models;
-using SupportWebDesk.Helpers.Services;
+using SupportWebDesk.Services;
 
 namespace SupportWebDesk.Controllers
 {

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using MailKit.Security;
@@ -9,8 +7,9 @@ using Microsoft.Extensions.Logging;
 using MimeKit;
 using SupportWebDesk.Data;
 using SupportWebDesk.Data.Models;
+using SupportWebDesk.Helpers;
 
-namespace SupportWebDesk.Helpers.Services
+namespace SupportWebDesk.Services
 {
     public class EmailSender : IEmailSender
     {

@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 using SupportWebDesk.Auth;
 using SupportWebDesk.Data.Jobs;
 using SupportWebDesk.Helpers;
-using SupportWebDesk.Helpers.Services;
+using SupportWebDesk.Services;
 
 namespace SupportWebDesk
 {
@@ -44,9 +44,8 @@ namespace SupportWebDesk
             services.AddTransient<EmailServiceJob>();
             services.AddTransient<TicketServiceJob>();
 
-            // Email registered for dependency injection
+            // Email registered in the service provider for dependency injection
             services.AddTransient<IEmailSender, EmailSender>();
-
             services.AddTransient<IDbInitializer, DbInitializer>();
             //if (env.IsDevelopment())
             //{
@@ -139,21 +138,14 @@ namespace SupportWebDesk
                     builder.Build();
                 });
             }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
             app.UseMiddleware<NotFoundMiddleware>(env);
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
-            GlobalConfiguration.Configuration
-                .UseActivator(activator: new HangfireActivator(serviceProvider));
 
             app.UseIdentityServer();
 
             app.UseHangfireServer();
-            app.UseHangfireDashboard();
 
             RecurringJob.AddOrUpdate(
                     recurringJobId: "emailJob",

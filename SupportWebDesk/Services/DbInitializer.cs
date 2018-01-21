@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using SupportWebDesk.Auth;
+using SupportWebDesk.Data;
 using SupportWebDesk.Data.Models;
-using SupportWebDesk.Helpers.Services;
 
-namespace SupportWebDesk.Data
+namespace SupportWebDesk.Services
 {
     /// <summary>
     /// db seeder class
@@ -160,13 +160,13 @@ namespace SupportWebDesk.Data
                 FirstName = "Bruger",
                 LastName = "Bruger",
                 AccessFailedCount = 0,
-                Email = "Bruger@gmail.com",
+                Email = "bruger@gmail.com",
                 EmailConfirmed = false,
                 LockoutEnabled = false,
                 NormalizedEmail = "BRUGER@GMAIL.COM",
                 NormalizedUserName = "BRUGER@GMAIL.COM",
                 TwoFactorEnabled = false,
-                UserName = "Bruger@gmail.com",
+                UserName = "bruger@gmail.com",
                 EmailSignature = "Sendt fra bruger SupportWebDesk"
             };
 

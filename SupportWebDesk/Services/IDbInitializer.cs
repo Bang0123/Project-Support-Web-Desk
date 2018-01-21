@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using SupportWebDesk.Data;
 
-namespace SupportWebDesk.Helpers.Services
+namespace SupportWebDesk.Services
 {
     public interface IDbInitializer
     {

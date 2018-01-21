@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp;
 using SupportWebDesk.Data.Models;
-using SupportWebDesk.Helpers.Services;
+using SupportWebDesk.Services;
 
 namespace SupportWebDesk.Data.Jobs
 {
